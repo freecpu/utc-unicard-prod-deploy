@@ -1,0 +1,120 @@
+watch_label=day1
+watch_ts=2026-11-05T17:49:29+08:00
+window=2026-11-05 00:00:00 ~ now
+info_log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_info.2026-11-05_0.log
+error_log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_error.2026-11-05_0.log
+slice_lines=129882
+slice_first_ts=2026-11-05 00:00:00
+slice_last_ts=2026-11-05 17:49:00
+
+---- ① C线类出现次数（0=窗口内无真实事件，非失败） ----
+FlowAccountCancelListener                count=0      first=- last=-
+FlowAccountRemoveTerminalListener        count=0      first=- last=-
+CycleUpdatedHandler                      count=8      first=00:30:00 last=00:31:33
+FlowAccountEvent                         count=0      first=- last=-
+FlowUpdatedHandler                       count=54     first=00:00:00 last=17:01:34
+
+---- ② C线类在 error 日志中的出现次数（非0=须人工核查） ----
+error_slice_lines=4994
+FlowAccountCancelListener                error_count=0
+FlowAccountRemoveTerminalListener        error_count=0
+CycleUpdatedHandler                      error_count=0
+FlowAccountEvent                         error_count=0
+FlowUpdatedHandler                       error_count=0
+
+---- ②b error 日志 logger 分布（窗口内全部） ----
+   4754 com.ryd.components.iot.support.unicome.CellSafetyClient
+    228 com.ryd.utc.unicome.mq.CardFlowQueryConsumer
+     10 com.ryd.web.advice.RydExceptionAdvices
+      1 org.springframework.amqp.rabbit.connection.CachingConnectionFactory
+      1 com.ryd.utc.unicome.mq.CardStatusUpdateConsumer
+
+---- ③ MQ 消费者计数（与换包前窗口对照，量级应一致） ----
+CardFlowQueryConsumer                    count=111524
+CardStatusUpdateConsumer                 count=370
+CardNotifyConsumer                       count=40
+
+---- ④ info 日志 logger 分布（前 20；出现陌生类名=新代码路径被执行） ----
+ 111524 com.ryd.utc.unicome.mq.CardFlowQueryConsumer
+  11856 com.ryd.components.iot.distribute.ConsumerImpl
+   4754 com.ryd.components.iot.support.unicome.CellSafetyClient
+   1118 com.ryd.utc.openapi.service.OpenapiReadService
+    370 com.ryd.utc.unicome.mq.CardStatusUpdateConsumer
+    101 com.ryd.utc.unicome.cache.UnicomeAccountCacheImpl
+     40 com.ryd.utc.unicome.mq.CardNotifyConsumer
+     36 com.ryd.utc.job.handler.FlowUpdatedHandler
+     23 com.xxl.job.core.thread.JobThread
+     23 com.xxl.job.core.executor.XxlJobExecutor
+     10 com.ryd.web.advice.RydExceptionAdvices
+      9 UNPARSED
+      4 com.ryd.utc.mall.listener.UserRechargeListener
+      4 com.ryd.utc.job.handler.SmsSyncHandler
+      4 com.ryd.utc.job.handler.FlowPackagePersistHandler
+      2 com.ryd.utc.mall.listener.FlowPackageListener
+      2 com.ryd.utc.job.handler.CycleUpdatedHandler
+      1 org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer
+      1 org.springframework.amqp.rabbit.connection.CachingConnectionFactory
+
+---- ⑤ xxl-job / JobThread 触发分钟（应每小时 HH:00 与 HH:01 各若干次） ----
+      2 2026-11-05 00:00
+      2 2026-11-05 00:01
+      7 2026-11-05 00:30
+      2 2026-11-05 00:31
+      2 2026-11-05 01:00
+      2 2026-11-05 01:01
+      2 2026-11-05 01:20
+      2 2026-11-05 01:21
+      2 2026-11-05 02:00
+      2 2026-11-05 02:01
+      3 2026-11-05 02:20
+      1 2026-11-05 02:21
+      2 2026-11-05 02:22
+      2 2026-11-05 03:00
+      2 2026-11-05 03:01
+      2 2026-11-05 04:00
+      2 2026-11-05 04:01
+      2 2026-11-05 05:00
+      2 2026-11-05 05:01
+      2 2026-11-05 06:00
+      2 2026-11-05 06:01
+      2 2026-11-05 07:00
+      2 2026-11-05 07:01
+      2 2026-11-05 08:00
+      2 2026-11-05 08:01
+      2 2026-11-05 09:00
+      2 2026-11-05 09:01
+      2 2026-11-05 10:00
+      2 2026-11-05 10:01
+      2 2026-11-05 11:00
+      2 2026-11-05 11:01
+      2 2026-11-05 12:00
+      2 2026-11-05 12:01
+      2 2026-11-05 13:00
+      2 2026-11-05 13:01
+      2 2026-11-05 13:20
+      2 2026-11-05 13:21
+      2 2026-11-05 14:00
+      2 2026-11-05 14:01
+      3 2026-11-05 14:20
+      1 2026-11-05 14:21
+      2 2026-11-05 14:22
+      2 2026-11-05 15:00
+      2 2026-11-05 15:01
+      2 2026-11-05 16:00
+      2 2026-11-05 16:01
+      2 2026-11-05 17:00
+      2 2026-11-05 17:01
+
+---- ⑥ 按分钟 info 行数（前 12） ----
+   2062 2026-11-05 01:20
+   2029 2026-11-05 13:20
+   1572 2026-11-05 01:03
+   1563 2026-11-05 03:03
+   1548 2026-11-05 01:02
+   1547 2026-11-05 02:03
+   1534 2026-11-05 07:03
+   1531 2026-11-05 11:03
+   1522 2026-11-05 08:03
+   1521 2026-11-05 05:02
+   1520 2026-11-05 03:02
+   1511 2026-11-05 15:03

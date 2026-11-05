@@ -1,0 +1,43 @@
+# audit-pii.ps1 固化后首轮回归（第 2 轮实测，修复两处自身缺陷之后）
+# 时刻=2026-11-05 18:56:15
+# 第 1 轮实测暴露的两个自身缺陷（均已修）：
+#   1) probe-utc-http.sh:10 被判 REAL —— 「不存在的假卡号」这句说明在行 9、值在行 10，
+#      只查命中行必然漏 → SYNTHETIC 改为看「命中行 + 前 3 行」上下文窗口。
+#   2) SYNTHETIC/EVIDENCE_COPY 重复计数（报 2/4，实际 1/2）—— 无边界对照组也走了语义分级
+#      → 加 loose 标记，对照组只计 occ。
+# ★ 修复 1 引入了新的假阴性通道，已在脚本头部显式声明：真实 iccid 若前 3 行内出现
+#   「假卡号/构造值/FAKE_」字样就会被洗成 SYNTHETIC。故 SYNTHETIC 计数不是绿灯，
+#   每次变化都必须逐条人工复核。工具降低重复取证成本，不替代人工语义判定。
+# 判据交叉验证：本轮 ICCID_20 occ=4 / MSISDN_11 occ=0 / LOOSE_20 occ=5 / LOOSE_11 occ=56
+#   与第 4 轮 bash 版、PowerShell 复算版的数字一致（LOOSE_20 由 3 增至 5 = 新增 09 号归档 2 处）。
+
+==== 0. 扫描范围（分母独立统计，不套白名单）====
+  root=D:\Freecpu\vscode\utc\utc-unicard-prod-deploy
+  TOTAL=81
+  SCANNED=80  SELF_SKIPPED=1  UNSCANNABLE=0
+
+==== 1. 带边界判据（真命中）====
+  ICCID_20  occ=4   # 20 位纯数字（iccid 形态）
+  [SYNTHETIC] scripts\probe-utc-http.sh:10  corelen=20 shape=####################
+  [SYNTHETIC] scripts\probe-utc-http.sh:42  corelen=20 shape=####################
+  [SYNTHETIC] 变更留痕\20261105-S9-C线次日观察\09-pii-全仓判定.txt:21  corelen=20 shape=####################
+  [SYNTHETIC] 变更留痕\20261105-S9-C线次日观察\09-pii-全仓判定.txt:22  corelen=20 shape=####################
+  MSISDN_11  occ=0   # 11 位 1[3-9]xxxxxxxxx（手机号形态）
+  OPENID  occ=3   # openId 键值对（假名化标识，掩数字无效）
+  [REDACTED] 变更留痕\20261105-S9-C线次日观察\05-cellsafety-取证.txt:114  corelen=28 shape="######":"<########-######>"
+  [REDACTED] 变更留痕\20261105-S9-C线次日观察\05-cellsafety-取证.txt:117  corelen=28 shape="######":"<########-######>"
+  [REDACTED] 变更留痕\20261105-S9-C线次日观察\次日观察记录.md:239  corelen=28 shape="######":"<########-######>"
+
+==== 2. 无边界对照（说明为何必须加边界，这些是假命中）====
+  LOOSE_20  occ=5
+  LOOSE_11  occ=56
+
+==== 3. 分级汇总 ====
+  SYNTHETIC=4  EVIDENCE_COPY=0  REDACTED=3
+  REAL=0
+
+==== 4. 结论 ====
+PII_NO_REAL_HIT: REAL=0；SYNTHETIC=4 EVIDENCE_COPY=0 REDACTED=3
+  → 无需 rewrite history。但 SYNTHETIC / EVIDENCE_COPY 的**归类是工具按行内关键词推断的**，
+    每次新增归档后须复核这两个计数是否变化，变了就逐条看新增的那条是不是真的合成值。
+AUDIT_PII_DONE

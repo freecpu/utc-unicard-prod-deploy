@@ -1,0 +1,37 @@
+==== A. 11-04 唯一命中的原文（数字→#）====
+######:####-##-## ##:##:##,### [INFO ] [ryd-utc-admin] [XNIO-# task-#] com.ryd.utc.mall.listener.FlowAccountCancelListener - [退卡清理] 账户 ################## 无流量包, 仅清理指针
+
+==== B. 该行时刻 vs 换包时刻（S3 换包 = 2026-11-04 12:43 前后）====
+（上面 A 的行首时间戳若晚于 12:43，则命中来自换包后的新 jar；早于则是旧 jar）
+######:####-##-## ##:##:##,### [INFO ] [ryd-utc-admin] [main] com.ryd.utc.UtcAdminApp - Started UtcAdminApp in ##.### seconds (JVM running for ##.###)
+
+==== C. 修正 A 节缺陷：11-05 用 cat 而非 zcat 重算整日计数 ====
+2026-11-05   LINES=152537 FlowQuery=117728 CardStat=389 CardNotif=40 FlowUpd=57 CycleUpd=8 CancelL=0 RemoveTermL=0 FAEvent=0
+  取证时刻=2026-11-05 18:07:40  ← 11-05 为未完成日
+
+==== D. 退卡相关关键字在 11-04 / 11-05 的出现（用业务文案而非类名，覆盖静默分支）====
+-- 关键字: 退卡清理 --
+   ryd-utc-admin_info.2026-11-04_0.log.gz count=1
+   ryd-utc-admin_info.2026-11-05_0.log count=0
+-- 关键字: 移除卡关联 --
+   ryd-utc-admin_info.2026-11-04_0.log.gz count=0
+   ryd-utc-admin_info.2026-11-05_0.log count=0
+  ↑ 业务文案与类名是两条独立证据链：类名靠 logger 字段，文案靠正文。
+    若 RemoveTerminal 走了 packages.isEmpty() 静默分支，两者都为 0，无法区分。
+Q3DONE
+
+==== 取证后补录（2026-11-05 第二次只读查询，非 q3.sh 原始输出）====
+S1. A 节的时间戳被掩码摧毁：zgrep -n 会加行号前缀，而 tr '0-9' '#' 把行号与
+    时间戳一起掩掉，导致「正好想看的那个字段」不可读。已单独重取（时间戳非个人数据，无需掩）：
+      Started UtcAdminApp（S3 换包后启动）= 2026-11-04 12:43:29,783
+      FlowAccountCancelListener 唯一命中    = 2026-11-04 17:26:19,135
+    ★ 结论：命中**晚于换包 4 小时 43 分** → 该次执行来自**换包后的新 jar**，
+      不是旧包遗留。C 线新代码在生产真实执行过且未报错，此为直接证据而非推断。
+S2. 命中行的线程是 XNIO-1 task-N（Undertow HTTP 工作线程）→ 由一次**真实 HTTP 请求**
+    触发（即有人在前台做了退卡），不是启动期噪声、不是定时任务。
+S3. 生产 /tmp 本轮残留（均 runyd:runyd 0644）：
+      watch-cline.sh 6172 / utc-cline-day1.txt 4535 / utc-cline-day1.runlog 4642
+      q-cellsafety.sh 1772 / q-cellsafety.out 5204
+      q2-cline-baseline.sh 3397 / q2.out 1764 / q3.sh 2359 / q3.out 1437
+    ⚠ q-cellsafety.out 含**部分掩码的 openId**（只掩了数字、残留字母），
+      且 0644 世界可读 → 应优先清除。清除属生产写操作，**待用户授权**，本次未执行。

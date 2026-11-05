@@ -124,6 +124,13 @@ NUL_FILES=""
 #      差的正是 .gitignore 与 .gitattributes。这类文件恰恰最容易被人顺手粘进 token，
 #      而漏扫之后汇总照样打印 CLEAN，构成「在残缺扫描面上给出干净结论」的假阴性，
 #      比报错更危险。
+#   ⑤ ★ 同类盲区**第三次**实例（2026-11-05 S9）：归档目录里的 `utc-cline-day1.runlog`
+#      因 `.runlog` 不在白名单而未被扫到，扫描面报 78/79 → CLEAN_PARTIAL。
+#      这次是**门禁自己报出来的**（因为已加了覆盖率分母），不是人事后发现的 ——
+#      说明「让结论自带它覆盖了多大范围」这个改动是有效的。
+#      已补：runlog / out / log / diff / patch / csv / tsv / sql / ps1 / bat / toml。
+#      ★ 一般化：**白名单永远会漏**，所以分母必须独立统计（TOTAL_FILES 不套白名单），
+#        且只要 SCANNED != TOTAL 就**不得**报 CLEAN。补白名单只是缩小差额，不是消除机制。
 # AUDIT_DEPTH=1 时行为等同旧版（只扫目录本层）；扫仓库用 AUDIT_DEPTH=99。
 FILES="$(find "$DIR" -maxdepth "${AUDIT_DEPTH:-1}" -type f -not -path '*/.git/*' \
            \( -name '*.sh' -o -name '*.json' -o -name '*.yml' -o -name '*.yaml' \
@@ -131,7 +138,10 @@ FILES="$(find "$DIR" -maxdepth "${AUDIT_DEPTH:-1}" -type f -not -path '*/.git/*'
               -o -name '*.txt' -o -name '*.md' \
               -o -name '*.cfg' -o -name '*.ini' -o -name '*.xml' -o -name '*.http' \
               -o -name '.*ignore' -o -name '.*attributes' \
-              -o -name 'Dockerfile*' -o -name 'Makefile*' -o -name '*.service' \) 2>/dev/null)"
+              -o -name 'Dockerfile*' -o -name 'Makefile*' -o -name '*.service' \
+              -o -name '*.runlog' -o -name '*.out' -o -name '*.log' \
+              -o -name '*.diff' -o -name '*.patch' -o -name '*.csv' -o -name '*.tsv' \
+              -o -name '*.sql' -o -name '*.ps1' -o -name '*.bat' -o -name '*.toml' \) 2>/dev/null)"
 [ -n "$FILES" ] || { echo "---- 汇总 ----"; echo "命中总数=0（${DIR} 下无待扫文件）"; echo "CLEAN: 无文件可扫（注意：这不代表安全，代表扫描面为空）"; exit 0; }
 
 # ★ 扫描面覆盖率：让「CLEAN」这个结论自带它覆盖了多大范围。

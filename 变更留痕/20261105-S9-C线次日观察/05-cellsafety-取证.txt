@@ -1,0 +1,133 @@
+==== A. 各日 error 日志中 CellSafetyClient 计数（zgrep 同时兼容 .gz 与明文） ====
+FILE                                           CELLSAFETY  TOTAL_ERR
+ryd-utc-admin_error.2026-10-01_0.log.gz              4868      21320
+ryd-utc-admin_error.2026-10-02_0.log.gz              4909      22208
+ryd-utc-admin_error.2026-10-03_0.log.gz              4961      22932
+ryd-utc-admin_error.2026-10-04_0.log.gz              4942      22263
+ryd-utc-admin_error.2026-10-05_0.log.gz              4841      21189
+ryd-utc-admin_error.2026-10-06_0.log.gz              4871      21350
+ryd-utc-admin_error.2026-10-07_0.log.gz              4967      22852
+ryd-utc-admin_error.2026-10-08_0.log.gz              4894      23349
+ryd-utc-admin_error.2026-10-09_0.log.gz              4755      21715
+ryd-utc-admin_error.2026-10-10_0.log.gz              4782      21439
+ryd-utc-admin_error.2026-10-11_0.log.gz              4771      21037
+ryd-utc-admin_error.2026-10-12_0.log.gz              4723      20751
+ryd-utc-admin_error.2026-10-13_0.log.gz              4756      20597
+ryd-utc-admin_error.2026-10-14_0.log.gz              5319      25703
+ryd-utc-admin_error.2026-10-15_0.log.gz              4749      20818
+ryd-utc-admin_error.2026-10-16_0.log.gz              4754      21087
+ryd-utc-admin_error.2026-10-17_0.log.gz              4762      20426
+ryd-utc-admin_error.2026-10-18_0.log.gz              4806      20818
+ryd-utc-admin_error.2026-10-19_0.log.gz              4779      21168
+ryd-utc-admin_error.2026-10-20_0.log.gz             16327     123419
+ryd-utc-admin_error.2026-10-21_0.log.gz             38133     315178
+ryd-utc-admin_error.2026-10-22_0.log.gz             38362     315174
+ryd-utc-admin_error.2026-10-23_0.log.gz             38474     316234
+ryd-utc-admin_error.2026-10-24_0.log.gz             38076     312679
+ryd-utc-admin_error.2026-10-25_0.log.gz             38054     313460
+ryd-utc-admin_error.2026-10-26_0.log.gz             38214     314008
+ryd-utc-admin_error.2026-10-27_0.log.gz             26828     215741
+ryd-utc-admin_error.2026-10-28_0.log.gz             18169     138168
+ryd-utc-admin_error.2026-10-29_0.log.gz              4815      21120
+ryd-utc-admin_error.2026-10-30_0.log.gz              4796      21440
+ryd-utc-admin_error.2026-10-31_0.log.gz              4807      21048
+ryd-utc-admin_error.2026-11-01_0.log.gz              4763      21127
+ryd-utc-admin_error.2026-11-02_0.log.gz              4815      22018
+ryd-utc-admin_error.2026-11-03_0.log.gz              4814      21989
+ryd-utc-admin_error.2026-11-04_0.log.gz              4785      23117
+ryd-utc-admin_error.2026-11-05_0.log                 4755          0
+
+==== B. 11-05 当天 CellSafetyClient 的按小时分布（看是持续还是集中爆发） ====
+     14 2026-11-05 00
+   2298 2026-11-05 01
+      9 2026-11-05 02
+      2 2026-11-05 03
+      9 2026-11-05 04
+     16 2026-11-05 05
+      5 2026-11-05 06
+     10 2026-11-05 07
+     11 2026-11-05 08
+     11 2026-11-05 09
+     15 2026-11-05 10
+     15 2026-11-05 11
+      8 2026-11-05 12
+   2286 2026-11-05 13
+     14 2026-11-05 14
+     10 2026-11-05 15
+     10 2026-11-05 16
+     11 2026-11-05 17
+      1 2026-11-05 18
+
+==== C. 换包前对照日 11-03 / 11-04 的按小时分布 ====
+-- 2026-11-03 (src=ryd-utc-admin_error.2026-11-03_0.log.gz) --
+     16 2026-11-03 00
+   2283 2026-11-03 01
+      9 2026-11-03 02
+     16 2026-11-03 03
+     12 2026-11-03 04
+      7 2026-11-03 05
+     14 2026-11-03 06
+     13 2026-11-03 07
+      3 2026-11-03 08
+     11 2026-11-03 09
+      9 2026-11-03 10
+      7 2026-11-03 11
+      9 2026-11-03 12
+   2285 2026-11-03 13
+     12 2026-11-03 14
+      9 2026-11-03 15
+     16 2026-11-03 16
+     10 2026-11-03 17
+     15 2026-11-03 18
+      7 2026-11-03 19
+     11 2026-11-03 20
+     17 2026-11-03 21
+     12 2026-11-03 22
+     11 2026-11-03 23
+-- 2026-11-04 (src=ryd-utc-admin_error.2026-11-04_0.log.gz) --
+      9 2026-11-04 00
+   2287 2026-11-04 01
+      7 2026-11-04 02
+     15 2026-11-04 03
+     16 2026-11-04 04
+     11 2026-11-04 05
+      8 2026-11-04 06
+     13 2026-11-04 07
+      8 2026-11-04 08
+     12 2026-11-04 09
+      9 2026-11-04 10
+     17 2026-11-04 11
+      3 2026-11-04 12
+   2283 2026-11-04 13
+     11 2026-11-04 14
+     11 2026-11-04 15
+     11 2026-11-04 16
+      5 2026-11-04 17
+     10 2026-11-04 18
+     13 2026-11-04 19
+      9 2026-11-04 20
+      4 2026-11-04 21
+      8 2026-11-04 22
+      5 2026-11-04 23
+
+==== D. 一条样本（数字全部替换为 #，避免带出 iccid/msisdn 等个人数据与任何凭据） ====
+####-##-## ##:##:##,### [ERROR] [ryd-utc-admin] [pool-#-thread-##] com.ryd.components.iot.support.unicome.CellSafetyClient - Post: https://gwapi.#####.cn/api/wsGetTerminalDetails/V#/#Main/vV#.# exception. req: {"data":{"iccids":["####################"],"openId":"<REDACTED-openId>","messageId":"#######
+
+==== E. 同一样本在换包前是否出现过（11-03） ====
+####-##-## ##:##:##,### [ERROR] [ryd-utc-admin] [pool-#-thread-#] com.ryd.components.iot.support.unicome.CellSafetyClient - Post: https://gwapi.#####.cn/api/wsGetTerminalDetails/V#/#Main/vV#.# exception. req: {"data":{"iccids":["####################"],"openId":"<REDACTED-openId>","messageId":"########
+QDONE
+
+==== 取证后注记（2026-11-05 由执行者补写，非脚本原始输出）====
+N1. A 表中 11-05 行的 TOTAL_ERR=0 是**测量缺陷，不是「当天 0 条 error」**。
+    原因：脚本对 TOTAL_ERR 用 zcat，而 11-05 是明文（未压缩）文件，zcat 失败返回 0。
+    11-05 的真实 error 切片行数以 utc-cline-day1.txt 的 error_slice_lines=4994 为准
+    （窗口 00:00~17:49）。CELLSAFETY 列用的是 zgrep，对明文与 .gz 都有效，故该列可信。
+N2. D/E 两节的 openId 已在**取回本地后**二次掩码为 <REDACTED-openId>。
+    原始脚本只做 tr '0-9' '#'，掩掉了数字但**残留了字母**，而 openId 是用户的
+    假名化标识；本仓已推送至 GitHub，故必须掩掉。
+    ★ 教训：日志正文含 iccid / openId 等个人数据，取样掩码必须同时覆盖字母与数字，
+      只掩数字等于没掩。
+N3. A 表揭示 10-20 ~ 10-28 存在一段 9 天的 error 量暴涨（总 error 行由约 21k/天
+    升至约 315k/天，CellSafetyClient 由约 4.8k/天 升至约 38k/天），10-27/10-28 递减后
+    于 10-29 回到基线。日期与 doc/需求/freecpu/20261020联通卡详情字段入库 相符，
+    但**本次未取证因果**，仅作相关性登记。
