@@ -55,22 +55,43 @@ if [ "${1:-}" = "selftest" ]; then
   printf '%s\n' "sed -e 's/TOKEN=[^ ]*/TOKEN=REDACTED/g'" > "$D/mask.sh"
   # 负控 C：归档证据里已掩好的输出 → 必须判 REDACTED
   printf '%s\n' 'unit_environment=Environment=OPENAPI_TOKEN=REDACTED' > "$D/evidence.txt"
+  # ★ 正控 D（编码盲区，2026-11-05 新增）：同一条真明文，但写成含 NUL 的 UTF-16 字节形态，
+  #   模拟 Windows PowerShell 5.1 的 Tee-Object / Out-File 默认输出（UTF-16LE + BOM）。
+  #   grep 对它**一条都匹配不到**，所以两件事必须同时成立：
+  #     ① 它被 UNSCANNABLE 计数拦下（=1）
+  #     ② 它里面的明文**不得**被计入 HARDCODED（故 HARDCODED 仍应为 2，不是 3）
+  #   ② 才是这个夹具的真正价值：它证明「grep 看不见」是真的，从而说明
+  #   缺了这道检测时，工具会在含此类文件的目录上报出**假 CLEAN**。
+  S='PASSWORD=fakePlainValue123'
+  : > "$D/u16.txt"
+  if command -v iconv >/dev/null 2>&1; then
+    printf '%s\n' "$S" | iconv -f UTF-8 -t UTF-16 > "$D/u16.txt" 2>/dev/null
+  fi
+  # 校验 iconv 的产物是否真的含 NUL；不含（或 iconv 不存在）就用 bash 逐字符插 NUL 兜底
+  if tr -d '\0' < "$D/u16.txt" 2>/dev/null | cmp -s - "$D/u16.txt" 2>/dev/null; then
+    : > "$D/u16.txt"
+    for ((i=0;i<${#S};i++)); do printf '%s\000' "${S:i:1}" >> "$D/u16.txt"; done
+    printf '\r\000\n\000' >> "$D/u16.txt"
+  fi
   OUT="$(bash "$SELF" "$D" 2>&1)"
   get() { printf '%s' "$OUT" | grep -oE "$1=[0-9]+" | head -1 | cut -d= -f2; }
   P="$(get HARDCODED)"; Q="$(get QUOTED)"; V="$(get VAR_REF)"; R="$(get REDACTED)"; G="$(get REGEX_FRAG)"
+  U="$(get UNSCANNABLE)"
   echo "selftest 实测/期望："
-  echo "  HARDCODED = ${P:-?} / 2   （正控：真明文必须被检出，全称与短别名各一）"
+  echo "  HARDCODED = ${P:-?} / 2   （正控：真明文必须被检出，全称与短别名各一；UTF-16 那条不得计入）"
   echo "  QUOTED    = ${Q:-?} / 2   （负控A：动态取值不得误报）"
   echo "  VAR_REF   = ${V:-?} / 1   （变量引用）"
   echo "  REDACTED  = ${R:-?} / 2   （负控C+B：已掩好的占位符不得误报）"
   echo "  REGEX_FRAG= ${G:-?} / 1   （负控B：sed 源文本不得误报）"
+  echo "  UNSCANNABLE=${U:-?} / 1  （正控D：含 NUL 的 UTF-16 文件必须被识别为空扫）"
   RC=0
   [ "${P:-0}" = "2" ] || { echo "  ✗ 正控失败：真明文未被检出（全称或短别名漏配）→ 任何 CLEAN 结论都不可信"; RC=1; }
   [ "${Q:-0}" = "2" ] || { echo "  ✗ 负控A失败：引号收尾的动态取值被误判 → 会产生虚假安全警报"; RC=1; }
   [ "${V:-0}" = "1" ] || { echo "  ✗ 变量引用未被识别"; RC=1; }
   [ "${R:-0}" = "2" ] || { echo "  ✗ 负控C失败：REDACTED 占位符被误判为明文"; RC=1; }
   [ "${G:-0}" = "1" ] || { echo "  ✗ 负控B失败：sed 正则碎片被误判为明文"; RC=1; }
-  [ "$RC" = "0" ] && echo "SELFTEST_OK: 1 组正控 + 3 组负控全部通过，CLEAN / ACTION_REQUIRED 结论均可信"
+  [ "${U:-0}" = "1" ] || { echo "  ✗ 正控D失败：含 NUL 的文件未被识别 → 工具会在有 UTF-16 文件的目录上报假 CLEAN"; RC=1; }
+  [ "$RC" = "0" ] && echo "SELFTEST_OK: 2 组正控（明文 + 编码）+ 3 组负控全部通过，CLEAN / CLEAN_PARTIAL / ACTION_REQUIRED 结论均可信"
   if [ "$RC" != "0" ]; then
     echo "SELFTEST_FAIL: 工具不可信，禁止据其结论做任何处置"
     # 全 0 通常意味着内层 awk 直接语法错误（bash -n 查不出来），把原始输出摊开才好定位
@@ -90,7 +111,9 @@ DIR="${1:-/tmp}"
 PAT='(^|[^A-Za-z0-9])(password|passwd|pwd|pw|secret|token|appkey|appid|accesskey)[[:space:]]*[:=][[:space:]]*[^[:space:]]*'
 
 TOTAL=0; HARD=0; VAR=0; EMPTY=0; QUOTED=0; REDACTED=0; REGEXFRAG=0; SELFN=0; FILEN=0
+NULN=0
 HARD_FILES=""
+NUL_FILES=""
 
 # 用 find 而非 shell glob：
 #   ① glob 只扫单层，扫仓库（含 变更留痕/ 子目录）会漏
@@ -125,6 +148,18 @@ while IFS= read -r f; do
   # 剔除自身：本脚本的注释里就写着 password= 这类字样，扫自己必然自指误报
   if [ "$(readlink -f "$f" 2>/dev/null)" = "$SELF" ]; then
     SELFN=$((SELFN+1)); continue
+  fi
+  # ★★ 编码盲区（2026-11-05 实测踩到，是本工具第二个「在残缺扫描面上报 CLEAN」的洞）：
+  #   Windows PowerShell 5.1 的 Tee-Object / Out-File **默认写 UTF-16LE + BOM**。
+  #   这种文件里 ASCII 模式（如 token=）在字节层被 NUL 隔开，下面的 grep -ohEi
+  #   一条都匹配不到 —— 文件被计入分母、也被计入「已扫」，但实际是**空扫**。
+  #   于是「扫描面 N/N（未覆盖 0）」照样成立、照样打印 CLEAN，构成假阴性。
+  #   旁证：git 会把它判成二进制（`git ls-files --eol` 显示 `i/-text`）。
+  #   检测用 NUL 字节而不是 file(1)：tr/cmp 到处都有，file 不一定装。
+  if ! tr -d '\0' < "$f" 2>/dev/null | cmp -s - "$f"; then
+    NULN=$((NULN+1)); NUL_FILES="$NUL_FILES $f"
+    printf 'UNSCANNABLE_ENCODING\t%s\t含 NUL 字节（疑似 UTF-16/二进制），本工具对它的结论无效\n' "$f"
+    continue
   fi
   # 逐条命中，只取键名与值长度
   while IFS=$'\t' read -r key vlen hasvar; do
@@ -199,11 +234,18 @@ echo "---- 汇总 ----"
 echo "扫描文件数=${FILEN}  命中总数=${TOTAL}"
 echo "  HARDCODED=${HARD}（须处置）  VAR_REF=${VAR}  QUOTED=${QUOTED}  REDACTED=${REDACTED}  REGEX_FRAG=${REGEXFRAG}  EMPTY=${EMPTY}"
 echo "  剔除自指文件=${SELFN}"
+# 机器可读行（selftest 的 get() 靠 `KEY=数字` 取值，不能只写在句子里）
+echo "  UNSCANNABLE=${NULN}"
 # ★ 扫描面：白名单命中数 / 目录内文本文件总数。两者不等说明有文件没被扫到，
 #   此时下面的 CLEAN 只能算「在已扫面上干净」，不能当全仓结论。
 UNCOVERED=$(( TOTAL_FILES - SCANNED_FILES ))
 [ "$UNCOVERED" -lt 0 ] && UNCOVERED=0
 echo "  扫描面=${SCANNED_FILES}/${TOTAL_FILES}（未覆盖 ${UNCOVERED} 个，已排除 .git/ 与二进制）"
+# ★ 有效扫描面：扣掉「被计入但实际空扫」的编码不可读文件。
+#   只报 SCANNED/TOTAL 会让人以为 72/72 就等于全仓都被检查过了。
+EFFECTIVE=$(( SCANNED_FILES - NULN - SELFN ))
+echo "  有效扫描面=${EFFECTIVE}/${TOTAL_FILES}（= 已扫 ${SCANNED_FILES} − 编码不可扫 ${NULN} − 自指剔除 ${SELFN}）"
+[ "$NULN" -gt 0 ] && { echo "  编码不可扫的文件（UTF-16/二进制，本工具对它们的结论无效）："; for g in $NUL_FILES; do echo "    $g"; done; }
 echo "含硬编码明文的文件清单："
 for g in $HARD_FILES; do echo "  $g"; done
 [ "$HARD" = "0" ] && echo "  (无)"
@@ -212,6 +254,13 @@ if [ "$HARD" -gt 0 ]; then
   echo "ACTION_REQUIRED: ${HARD} 处疑似明文凭据，分布在 $(echo $HARD_FILES | wc -w) 个文件"
   echo "  下一步：逐行人工复核上面列出的文件（本工具有已知盲区，见文件头注释），"
   echo "          确认是真凭据则清理并轮换；确认是误报则补分级规则，不要直接改判据。"
+elif [ "$NULN" -gt 0 ]; then
+  # ★ 不报 CLEAN。这些文件被计进了扫描面却一条都没扫到，报干净就是假阴性。
+  echo "CLEAN_PARTIAL: 可扫的 ${EFFECTIVE} 个文件未发现硬编码明文凭据，"
+  echo "  但有 ${NULN} 个文件含 NUL 字节（多半是 PowerShell Tee-Object/Out-File 写的 UTF-16LE），"
+  echo "  grep 对它们**一条都匹配不到** —— 它们等于没被检查。"
+  echo "  下一步：转成 UTF-8 无 BOM（LF）后重跑；本仓证据文件一律应为 UTF-8。"
+  echo "  在转码之前，不得把本结论当作全仓 CLEAN 使用。"
 elif [ "$UNCOVERED" -gt 0 ]; then
   # ★ 不报 CLEAN。扫描面不完整时报干净，是比报错更危险的假阴性。
   echo "CLEAN_PARTIAL: 已扫的 ${SCANNED_FILES} 个文件未发现硬编码明文凭据，"
@@ -219,7 +268,7 @@ elif [ "$UNCOVERED" -gt 0 ]; then
   echo "  下一步：把这些文件补进上面的 find 白名单后重跑，或人工抽读。"
   echo "  在白名单补齐之前，不得把本结论当作全仓 CLEAN 使用。"
 else
-  echo "CLEAN: 未发现硬编码明文凭据（扫描面完整：${SCANNED_FILES}/${TOTAL_FILES}）"
+  echo "CLEAN: 未发现硬编码明文凭据（扫描面完整：${SCANNED_FILES}/${TOTAL_FILES}，有效扫描面 ${EFFECTIVE}）"
   echo "  命中项归类：VAR_REF=${VAR} QUOTED=${QUOTED} REDACTED=${REDACTED} REGEX_FRAG=${REGEXFRAG} EMPTY=${EMPTY}"
   echo "  ⚠ 本 CLEAN 结论的前提是 selftest 通过（正控能检出真明文）。"
   echo "    且工具对「以正则元字符开头的真凭据」有盲区，新增文件仍建议人工抽读。"

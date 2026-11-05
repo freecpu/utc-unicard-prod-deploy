@@ -1,0 +1,28 @@
+==== mode=preflight unit=ryd-unicard-official host=iZbp1ag3i4b42fe3z9xiy4Z ====
+ts=2026-11-05T17:24:22+0800
+== 只读现状 ==
+systemd_version=systemd 219
+unit_type=simple
+restart_policy=always / 100ms
+start_limit=5 / 10000000
+is_active=active  (Type=simple 下不可作健康判据)
+MainPID=13930
+ExecMainStartTimestamp=Wed 2026-10-28 01:12:59 CST
+port_listen=1
+unit_sha256=ad1acd4d7fbb3aa63b4d6e7edda896c08c51130c45448b13bc09ff386e03570d
+unit_bytes=1321
+proc_cmdline_len=170
+has_agent_flow_D=0
+current_ExecStart:
+  16:ExecStart=/bin/sh -c "exec /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=7003 -Dfinance-refund.enabled=true /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar > /usr/local/ryd-unicard/var/official.log 2>&1"
+anchor_match_count=1
+== 前置条件判定 ==
+  [PASS] unit sha256 与指纹台账 §5 一致
+  [PASS] 注入锚点唯一匹配（1 处）—— 不会误伤 L15 的注释变体
+  [PASS] 现役 cmdline 无任何 -Dutc.agent-flow-* → fail-closed 成立（缺陷未被人修过）
+  [PASS] TA_LOG=/usr/local/ryd-unicard/var/official.log 存在（526447545 B）
+== 注入内容预览（尚未写入）==
+  锚点   : -Dfinance-refund.enabled=true 
+  追加   : -Dutc.agent-flow-coefficient=50 -Dutc.agent-flow-recharge-min=0 
+  备份到 : /tmp/ryd-unicard-official.bak-agentflow-fix
+PREFLIGHT_OK: 前置条件全部满足，可进 apply（须用户显式授权重启）

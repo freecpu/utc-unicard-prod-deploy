@@ -5,15 +5,32 @@
 > 应用目录：`/usr/local/ryd-unicard/`　`WorkingDirectory=/usr/local/ryd-unicard`
 > 应用日志：`/usr/local/ryd-unicard/var/official.log`
 >
-> ⚠ **本 SOP 是生产写操作（改 unit + 重启）。截至 2026-11-05，尚未取得执行授权。**
+> ✅ **本 SOP 的方案 A 已于 2026-11-05 17:25 CST 执行完毕**（用户授权「选定方案后立即执行」）。
+> 结果 `APPLY_OK` + `VERIFY_OK`。执行记录见 `变更留痕/20261105-S4-生产方案A/执行与验收记录.md`。
+> 现役 unit sha256 = `4a928353…67cc`；回滚目标 = `ad1acd4d…570d`（备份在生产 `/tmp/`）。
+> ⚠ **仍有 1 环未闭环**：预划拨**真实业务调用**未验证（脚本不制造业务数据）。
+> ⚠ **方案 A 的代价（配置漂移）**：修复值只在 unit L16，不在 jar / 不在源码仓；
+> 换包或按源码重建 unit 会静默丢失这两个键，缺陷复活且无告警。
+>
+> ⚠ **本 SOP 是生产写操作（改 unit + 重启）。再次执行前须重新取得授权。**
 > ⚠ **注入值取多少、走方案 A 还是 B，属架构决策，须用户裁定，操作者不得自行选定。**
+> ⚠⚠ **重启前必须先备份 `official.log`（§5.1b）**：重定向是 `>`（截断），重启即清零。
+> 2026-11-05 的执行没做这一步，销毁了 502 MB 生产日志。
+> ⚠⚠ **unit 文件含明文 `OPENAPI_TOKEN`**：读它必须脱敏，禁止整文件 `cat`，禁止入 git（§8 第 11/12 条）。
 
 ---
 
-## 0. 要修的缺陷
+## 0. 要修的缺陷（★ 已于 2026-11-05 修复，本节保留为病因记录）
 
-生产 threeants 的**经销商流量池预划拨自 2026-10-28 起 fail-closed**，已坏 8 天。
+生产 threeants 的**经销商流量池预划拨自 2026-10-28 起 fail-closed**，坏了 8 天。
 `AgentServiceImpl` 预划拨 100% 抛「经销商流量池不存在」。
+
+> ★ 病因不是「缺池 id」。现行 `AgentServiceImpl` L369-373 只读
+> `utc.agent-flow-coefficient` / `utc.agent-flow-recharge-min` 两个配置项，任一为 null 即抛；
+> `utcProperties.getAgentFlowId()` 在整个 threeants 源码树引用数为 **0**，
+> 且 prod yml 的 `agentFlowId` 本来就未注释。报错文案是**沿用旧代码未改的字符串**。
+> 详见 `变更留痕/20261105-S4-生产方案A/执行与验收记录.md` §1。
+
 
 **运行期直接证据**（`变更留痕/20261105-S4-D注入通路验证/生产移植性探测.txt`）：
 
@@ -202,16 +219,50 @@ ssh runyd-47-111-157-5 'bash /tmp/probe-prod-portability.sh'
 
 ### 5.1 备份 unit（★ 不可跳过）
 
+推荐直接用执行脚本，它把备份与指纹核对绑在一起（备份 sha 不等于台账值就 `exit 4`）：
+
+```bash
+scp scripts/apply-agentflow-fix.sh runyd-47-111-157-5:/tmp/
+ssh runyd-47-111-157-5 'TA_UNIT=ryd-unicard-official \
+  TA_LOG=/usr/local/ryd-unicard/var/official.log \
+  bash /tmp/apply-agentflow-fix.sh preflight'      # 只读，4 项闸门
+```
+
+手工备份的等价命令：
+
 ```bash
 ssh runyd-47-111-157-5 'sudo cp -p /etc/systemd/system/ryd-unicard-official.service \
   /tmp/ryd-unicard-official.service.bak-<日期> && \
   sha256sum /tmp/ryd-unicard-official.service.bak-<日期>'
 ```
 
-sha256 **必须等于** §2 记录的 `ad1acd4d…570d`。不等就停手。
+sha256 **必须等于** §2 记录的 `ad1acd4d…570d`（**方案 A 已于 2026-11-05 执行，现役值已变为
+`4a928353…67cc`；`ad1acd4d…570d` 现在是回滚目标**）。不等就停手。
 
 > ⚠ 用 `cp -p`，**不是 `cp -a`**；`mv` 用 `mv -v`，**GNU `mv` 没有 `-a` 选项**。
 > 我曾在给用户的生产命令里写过 `sudo mv -a`，那是错的。
+
+> ⚠⚠ **这个 unit 文件含明文 `OPENAPI_TOKEN`（`Environment=` 行）。读它必须先脱敏**：
+> `sudo grep -v Environment= <unit>` 或 `sudo sed 's/\(TOKEN=\).*/\1REDACTED/' <unit>`。
+> 备份文件同样含该 token —— **禁止 scp 回本仓、禁止入 git、禁止在记录里复述其值**。
+> 2026-11-05 我用 `cat -A` 整文件打印，把 token 带进了终端输出，这是取证环节的纪律违反。
+
+### 5.1b 备份应用日志（★ 不可跳过 —— 2026-11-05 血的教训）
+
+`ExecStart` 的重定向是 **`>`（截断）而非 `>>`（追加）**，
+**每次重启都会把 `official.log` 整份清零**。2026-11-05 的重启销毁了
+526,489,119 B（约 502 MB，覆盖 2026-10-28 → 2026-11-05 的全部 threeants 生产日志），不可恢复。
+
+```bash
+ssh runyd-47-111-157-5 'sudo cp -p /usr/local/ryd-unicard/var/official.log \
+  /usr/local/ryd-unicard/var/official.log.pre-<日期> && \
+  sudo stat -c "%s %n" /usr/local/ryd-unicard/var/official.log*'
+```
+
+> 502 MB 的 `cp` 需要几十秒与等量磁盘空间，先 `df -h` 确认。
+> 若判断历史日志无保留价值，**也必须在动手前明确说出来并让用户确认**，不能默认它无所谓。
+> `apply-agentflow-fix.sh` 里的 `log_new_text` 有「读到 `cur < off` 就退回整读」的守卫，
+> 但那守的是**结论正确性**（防止把日志源死掉当成没有异常），**守不住数据**。两件事必须分开做。
 
 ### 5.2 改 ExecStart
 
@@ -222,21 +273,28 @@ sha256 **必须等于** §2 记录的 `ad1acd4d…570d`。不等就停手。
 ```
 
 约束：
-- **只改 L16**，不动 L15 的注释变体。
+- **只改 L16**，不动 L15 的注释变体。（锚点选单横线 `-D` 形式，实测 `anchor_match_count=1`，天然不误伤 L15 的双横线 `--finance-refund.enabled=true`）
 - 保持 `/bin/sh -c "exec …"` 的整体结构与末尾重定向不变。
-- 改完立刻 `sha256sum` + `diff` 与备份比对，**确认只有预期的那一行变了**。
+- 改完立刻 `sha256sum` + `diff` 与备份比对，**确认只有预期的那一行变了**（`diff_changed_lines` 必须恰好为 2）。
+- ★ `sed` **无匹配时静默不改且 rc=0**，是典型假阴性 → 改完必须 `grep -q` 自检注入是否真落进去。
 
 ### 5.3 重载并重启（★ 核心写操作）
 
+生产修复用 `apply-agentflow-fix.sh`（注入真实值 50/0，只跑 pos 类路径）：
+
 ```bash
-TA_UNIT=ryd-unicard-official \
-TA_LOG=/usr/local/ryd-unicard/var/official.log \
-bash scripts/verify-d-injection.sh pos
+ssh runyd-47-111-157-5 'TA_UNIT=ryd-unicard-official \
+  TA_LOG=/usr/local/ryd-unicard/var/official.log \
+  bash /tmp/apply-agentflow-fix.sh apply'
 ```
 
-`TA_LOG` **必须带**，否则判定不可信（§3）。
+`TA_LOG` **必须带**，否则脚本直接 `exit 3` 拒绝执行（§3）。
 
 脚本会在 `restart` 前一律先 `systemctl reset-failed`。
+> 注意：`reset-failed` 是幂等无害的保险，但**不能**把它当作「已规避启动限流」的证据 ——
+> 生产实测完整启动 27.4 s > `StartLimitInterval` 10 s，应用层反复失败时每轮间隔 ≥27 s，
+> 10 s 窗口内凑不满 `StartLimitBurst=5`，所以那种失败形态下**不会**进 `failed`，而是无限重启。
+
 
 ### ★ 注入错值后的失败形态 —— **无法断言，别照抄我旧的说法**
 
@@ -287,7 +345,17 @@ ssh runyd-47-111-157-5 'sudo cp -p /tmp/ryd-unicard-official.service.bak-<日期
   sudo systemctl restart ryd-unicard-official'
 ```
 
-或用脚本：`bash scripts/verify-d-injection.sh restore`
+或用脚本（★ 方案 A 已于 2026-11-05 执行，现役备份就是它产生的）：
+
+```bash
+ssh runyd-47-111-157-5 'TA_UNIT=ryd-unicard-official \
+  TA_LOG=/usr/local/ryd-unicard/var/official.log \
+  bash /tmp/apply-agentflow-fix.sh rollback'
+# 备份：/tmp/ryd-unicard-official.bak-agentflow-fix（sha256 = ad1acd4d…570d）
+# 脚本守卫：备份 sha 不等于台账值就拒绝回滚（回滚到来历不明的文件比不回滚更危险）
+```
+
+（测试机通路验证用的是另一个备份与另一个命令：`bash scripts/verify-d-injection.sh restore`）
 
 回滚后验证：
 1. unit 文件 sha256 **回到** `ad1acd4d…570d`
@@ -295,28 +363,74 @@ ssh runyd-47-111-157-5 'sudo cp -p /tmp/ryd-unicard-official.service.bak-<日期
 3. `port_listen` **= 1**
 4. ExecStart 与备份**逐字一致**（用 diff，不用肉眼）
 
-> `reset-failed` 在回滚时同样要执行：若失败形态是「钉在 failed」，
-> 不 reset 则 `restart` 会被 systemd 直接拒掉。
+> ⚠ 回滚意味着 fail-closed 缺陷**重新生效**，须另行安排修复。
+> ⚠ 回滚同样会触发 `>` 截断 —— **回滚前也要先备份 `official.log`**（§5.1b）。
+
+> `reset-failed` 在回滚时同样要执行：它是幂等保险。但注意 §5.3 的实测结论 ——
+> 生产启动 27.4 s > 限流窗口 10 s，应用层反复失败其实**不会**进 `failed`。
 
 ---
 
 ## 7. 收尾
 
-1. 归档原始输出到 `变更留痕/<日期>-<任务>/`
-2. 更新 `指纹台账.md`：unit 新 sha256、MainPID、启动时刻；技术债第 1 条状态改为「已修复」
+1. 归档原始输出到 `变更留痕/<日期>-<任务>/` —— ✅ 2026-11-05 已做：`变更留痕/20261105-S4-生产方案A/`（01-preflight / 02-apply / 03-verify / 04-log-health + 执行与验收记录.md）
+2. 更新 `指纹台账.md`：unit 新 sha256、MainPID、启动时刻；技术债第 1 条状态改为「已修复」 —— ✅ 已做（§4/§5/§9/§10）
 3. **登记配置漂移**（方案 A 的已知代价）：在台账里写明
-   「jar 内 `application-prod.yml` 仍是注释状态，真实值在 unit L16」
+   「jar 内 `application-prod.yml` 仍是注释状态，真实值在 unit L16」 —— ✅ 已登记于台账 §9 第 1 条与第 16 条
 4. 清理远端 `/tmp`。**清理前先只读确认服务 active、7003 LISTEN**，清理后复核文件不存在
+   —— ⚠ 本次**不清理**：`/tmp/ryd-unicard-official.bak-agentflow-fix` 是唯一回滚源，
+   `/tmp/apply-agentflow-fix.sh` 是回滚所需工具，两者须保留（台账 §9 第 14 条另记其权限问题）
 5. 若沙箱拦下 `rm`（`SetNamedSecurityInfoW 失败: 5`）：**先只读复核远端真实状态**再提权重跑
+6. ★ **补做业务侧验证**：预划拨真实调用一次，确认不再抛「经销商流量池不存在」。
+   在此之前不得对外宣称缺陷彻底闭环 —— 脚本判据证明的是「两个属性已非 null」，
+   不是「业务流程已通」。
 
 ## 8. 禁止事项
 
 1. **禁止**未做 §3 移植性探测就把测试机脚本套到生产。
-2. **禁止**不带 `TA_LOG` 跑 `verify-d-injection.sh`。
+2. **禁止**不带 `TA_LOG` 跑 `verify-d-injection.sh` / `apply-agentflow-fix.sh`。
 3. **禁止**在生产上跑 neg / neg2 / neg3（除非 §4 的同源性证明被推翻并重获授权）。
 4. **禁止**用 `is-active` 作为健康判据。
 5. **禁止**把 `-D` 放到 jar 文件名之后。
 6. **禁止**自行选定注入值或方案 A/B。
-7. **禁止**改动 L15 的注释变体、`official.log`、jar 本体。
+7. **禁止**改动 L15 的注释变体、jar 本体。
 8. **禁止**内联远程命令（含 `$`、竖线、空格、中文一律写成脚本 scp 上传）。
+   ★ 2026-11-05 又踩一次：`grep -nE "Started .*Application|Tomcat started"` 的内层双引号被
+   PowerShell 剥掉，`|` 被当成管道 → `bash: JVM: command not found`。改用**无空格的单词模式**
+   （`grep -n Started`）或写脚本上传。
 9. **禁止**用 `sudo cmd < /proc/...` 形式读 root 进程文件。
+10. **禁止**在未备份 `official.log` 的情况下重启 threeants（§5.1b）。`>` 是截断式重定向，重启即清零。
+11. **禁止**不脱敏就 `cat` / `cat -A` unit 文件（含明文 `OPENAPI_TOKEN`）。只允许 `grep -v Environment=` 或 sed 脱敏后输出。
+12. **禁止**把 unit 文件或其备份 scp 回本仓 / 提交进 git。
+13. **禁止**仅凭脚本 `APPLY_OK` 就宣称业务已恢复 —— 真实业务调用是独立的一环（§7 第 6 条）。
+
+---
+
+## 9. ★ 后续任何 threeants 换包 / 重建 unit，必须重跑 verify
+
+方案 A 把修复值放在了 **unit 文件**里，不在 jar 内、不在源码仓。这带来一个
+**没有任何自动机制会发现**的失效模式：
+
+| 触发场景 | 后果 |
+|---|---|
+| 换 threeants jar（不动 unit） | 注入仍在 → **安全**。但 jar 内 `application-prod.yml` 那两个键**仍是注释状态**，一旦有人「顺手把 unit 里的 -D 清掉，因为源码里已经配好了」就会立刻失效 |
+| 按源码/模板**重建** unit 文件 | 两个 `-D` **静默丢失** → 属性回到 null → fail-closed **复活，且无任何告警** |
+| 走方案 B（改 yml 重新构建）后忘记清 unit 里的 `-D` | `-D` 优先级高于 yml，unit 里的值会**压住**新构建的配置 → 改 yml 不生效，排查方向被彻底带偏 |
+
+所以：**每次 threeants 换包或动 unit 之后，收尾必须跑一次**
+
+```bash
+ssh runyd-47-111-157-5 'TA_UNIT=ryd-unicard-official \
+  bash /tmp/apply-agentflow-fix.sh verify'
+```
+
+判据：`coef_exact=1`、`rmin_exact=1`、`port_listen=1`、`unit_sha256` 与台账 §5 现役值一致。
+输出 `VERIFY_FAIL` 就必须当场查清，不得留到业务报错才发现。
+
+> 若已改走方案 B（值进了 jar），则**期望结果反过来**：`unit_sha256` 应回到不含 `-D` 的版本，
+> 且需另外验证 jar 内 yml 的两个键已取消注释。届时本节须重写，不能照抄。
+
+**根治仍是方案 B**：把两个值写进 `application-prod.yml` 并重新构建，让配置回到版本控制里。
+方案 A 是「已授权、可立即执行、代价是配置漂移」的应急修复，不是终态。
+
+

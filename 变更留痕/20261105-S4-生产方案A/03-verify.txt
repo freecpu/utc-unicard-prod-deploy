@@ -1,0 +1,38 @@
+==== mode=verify unit=ryd-unicard-official host=iZbp1ag3i4b42fe3z9xiy4Z ====
+ts=2026-11-05T17:26:16+0800
+== 只读现状 ==
+systemd_version=systemd 219
+unit_type=simple
+restart_policy=always / 100ms
+start_limit=5 / 10000000
+is_active=active  (Type=simple 下不可作健康判据)
+MainPID=23774
+ExecMainStartTimestamp=Thu 2026-11-05 17:25:13 CST
+port_listen=1
+unit_sha256=4a928353dcb3aa78dd209d8ee11786f1e525a6ab6b0a10503e030eefb20767cc
+unit_bytes=1385
+proc_cmdline_len=234
+has_agent_flow_D=1
+current_ExecStart:
+  16:ExecStart=/bin/sh -c "exec /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=7003 -Dfinance-refund.enabled=true -Dutc.agent-flow-coefficient=50 -Dutc.agent-flow-recharge-min=0 /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar > /usr/local/ryd-unicard/var/official.log 2>&1"
+anchor_match_count=1
+== 修复后复核（只读）==
+proc_cmdline_len=234
+coef_exact=1
+rmin_exact=1
+unit_sha256=4a928353dcb3aa78dd209d8ee11786f1e525a6ab6b0a10503e030eefb20767cc
+backup_exists=YES
+backup_sha256=ad1acd4d7fbb3aa63b4d6e7edda896c08c51130c45448b13bc09ff386e03570d
+port_listen=1
+proc_etimes_sec=63
+VERIFY_OK: 注入值在运行期生效、端口 LISTEN
+--- logfiles ---
+total 2210404
+drwxr-xr-x 2 root root      20480 Aug  7 16:25 data
+drwxr-xr-x 4 root root       4096 Mar  5  2023 log
+-rw-r--r-- 1 root root      47487 Nov  5 17:26 official.log
+-rw-r--r-- 1 root root 5325454890 Sep 28 12:48 official.log.bak
+-rw-r--r-- 1 root root         76 Aug 16 20:52 ryd-sp.log
+-rw-r--r-- 1 root root         78 Jun 18 11:13 schedule.log
+drwxrwxrwx 2 root root       4096 Feb  9  2024 tmp
+drwxr-xr-x 2 root root       4096 Mar 28  2023 wwwlogs

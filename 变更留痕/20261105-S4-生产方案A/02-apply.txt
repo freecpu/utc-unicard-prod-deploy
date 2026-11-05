@@ -1,0 +1,66 @@
+==== mode=apply unit=ryd-unicard-official host=iZbp1ag3i4b42fe3z9xiy4Z ====
+ts=2026-11-05T17:25:11+0800
+== 只读现状 ==
+systemd_version=systemd 219
+unit_type=simple
+restart_policy=always / 100ms
+start_limit=5 / 10000000
+is_active=active  (Type=simple 下不可作健康判据)
+MainPID=13930
+ExecMainStartTimestamp=Wed 2026-10-28 01:12:59 CST
+port_listen=1
+unit_sha256=ad1acd4d7fbb3aa63b4d6e7edda896c08c51130c45448b13bc09ff386e03570d
+unit_bytes=1321
+proc_cmdline_len=170
+has_agent_flow_D=0
+current_ExecStart:
+  16:ExecStart=/bin/sh -c "exec /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=7003 -Dfinance-refund.enabled=true /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar > /usr/local/ryd-unicard/var/official.log 2>&1"
+anchor_match_count=1
+== 前置闸门 ==
+  [PASS] unit 指纹、锚点唯一性、TA_LOG、注入值均为纯数字
+== 备份 ==
+backup_created=/tmp/ryd-unicard-official.bak-agentflow-fix
+backup_sha256=ad1acd4d7fbb3aa63b4d6e7edda896c08c51130c45448b13bc09ff386e03570d
+  [PASS] 备份 sha256 == 改前 unit sha256 == 台账值
+== 注入 ==
+改前 ExecStart:
+  ExecStart=/bin/sh -c "exec /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=7003 -Dfinance-refund.enabled=true /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar > /usr/local/ryd-unicard/var/official.log 2>&1"
+sed_rc=0
+改后 ExecStart:
+  ExecStart=/bin/sh -c "exec /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=7003 -Dfinance-refund.enabled=true -Dutc.agent-flow-coefficient=50 -Dutc.agent-flow-recharge-min=0 /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar > /usr/local/ryd-unicard/var/official.log 2>&1"
+diff_changed_lines=2  (期望 2 = 一行旧 + 一行新)
+  [PASS] 改动面恰好一行
+new_unit_sha256=4a928353dcb3aa78dd209d8ee11786f1e525a6ab6b0a10503e030eefb20767cc   ← 记入指纹台账
+== 重启 ==
+log_source=/usr/local/ryd-unicard/var/official.log
+log_offset_before=526489119
+PID_before=13930
+restart_rc=0
+restart_since=2026-11-05 17:25:12
+port_up_after_secs=30
+== 结果 ==
+is_active=active  (不可作健康判据)
+PID_after=23774
+ExecMainStartTimestamp=Thu 2026-11-05 17:25:13 CST
+port_listen=1
+proc_cmdline_len=234
+cmdline_agent-flow-coefficient=50
+cmdline_agent-flow-recharge-min=0
+cmdline_coef_exact_match=1   cmdline_rmin_exact_match=1
+cmdline_profile=spring.profiles.active=prod
+ssh : WARN: /usr/local/ryd-unicard/var/official.log 在观测期内被轮转/截断（526489119 → 7059），改为整读
+At line:1 char:52
++ ... rod-deploy; ssh runyd-47-111-157-5 'TA_UNIT=ryd-unicard-official TA_L ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (WARN: /usr/loca...19 → 7059），改为整读:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+log_lines_seen=68
+log_source_alive_markers=4
+binding_error_lines=0
+== 判定 ==
+APPLY_OK: 端口 7003 已 LISTEN；cmdline 含两个 -D 且值精确匹配 50/0；
+          日志源确认存活（68 行、4 个启动特征串）且无绑定异常。
+          → 两个属性已非 null，AgentServiceImpl L371 的 isNull 分支不再命中。
+  仍须补的一环：预划拨**真实业务调用**成功。本脚本不制造业务数据，
+          须由业务侧发起一次真实预划拨确认不再抛「经销商流量池不存在」。
