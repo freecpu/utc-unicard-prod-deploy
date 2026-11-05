@@ -1,0 +1,21 @@
+probe_label=pre-S6
+probe_ts=2026-11-04T13:14:20+0800
+host=iZbp1ag3i4b42fe3z9xiy4Z
+unit=ryd-unicard-official
+unit_is_active=active
+unit_main_pid=13930
+unit_exec_start=Wed 2026-10-28 01:12:59 CST
+unit_workdir=/usr/local/ryd-unicard
+port_listen_pid=13930
+proc_cmdline=/usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=7003 -Dfinance-refund.enabled=true /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar 
+proc_etimes=648081
+proc_owner=root
+has_additional_location=0
+has_config_location=0
+additional_location_value=
+profile_arg=spring.profiles.active=prod
+d_system_props=-Dspring.profiles.active,-Dserver.port,-Dfinance-refund.enabled,
+unit_environment=Environment=OPENAPI_TOKEN=REDACTED
+search_path_config_dir=ABSENT
+search_path_toplevel_yml=0
+candidate_yml_list=/usr/local/ryd-unicard/bin/config/application-prod.yml;32;2026-09-28 15:58|/usr/local/ryd-unicard/bin/application-prod.yml;32;2026-09-28 15:56|

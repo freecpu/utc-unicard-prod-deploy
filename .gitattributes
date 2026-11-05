@@ -1,0 +1,30 @@
+# ============================================================================
+# .gitattributes — 行尾由仓库强制，不依赖各人本机的 core.autocrlf
+#
+# 为什么必须有这个文件：
+#   本仓的全部用途是把 scripts/ 下的脚本 scp 到 Linux 生产/测试机执行。
+#   实测本机 core.autocrlf=input，18 个 .sh 在 index 与工作区都是 LF（`git ls-files --eol`
+#   输出 i/lf w/lf attr/）—— 但 attr/ 为空说明**行尾正确纯粹依赖本机配置**。
+#   换一台 core.autocrlf=true 的 Windows 机器检出，.sh 会带 CRLF，
+#   scp 上去执行时报 `$'\r': command not found` 或 `bad interpreter: /bin/bash^M`，
+#   而且报错点往往在脚本中段，很难一眼看出是行尾问题。
+# ============================================================================
+
+# 默认：文本文件自动识别，入库统一 LF
+* text=auto eol=lf
+
+# Shell 脚本必须 LF —— 这是硬要求，不给任何机器留转换余地
+*.sh text eol=lf
+
+# 文档与证据文本同样 LF，避免 diff 噪声
+*.md text eol=lf
+*.txt text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# 二进制：禁止任何行尾转换与文本 diff
+*.jar binary
+*.png binary
+*.jpg binary
+*.zip binary
+*.gz binary

@@ -1,0 +1,43 @@
+﻿==== 源 fat jar ====
+fat_jar      = /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar
+fat_sha256   = bd24267bcf629b528fe6bc4bedaa2cc57faccd031b9e2a820769e8c194732b05
+
+==== pom.properties 归一化比对（剔掉 # 注释行，故构建时间不参与）====
+pom_bytes            = 128
+pom_total_lines      = 5
+pom_comment_lines    = 2   （已剔除，构建时间戳在这里）
+pom_normalized_sha256= 11acff69fe095e7ee86013a4bc954bc3fd9763286bb4dde648239973c01125c0
+
+==== 嵌套自有模块 jar 的内层条目清单 ====
+nested_jar_count = 2
+
+-- BOOT-INF/lib/unicard-common-1.0.0.jar
+   nested_bytes        = 236204
+   nested_sha256       = 01ca7ec321807e9e1ac63c660e99ec075b186363aab70512cd1e6dcd06435de4   （含时间戳，两边不同属正常）
+   inner_entry_count   = 225
+   inner_manifest_sha  = 872b3cdcad19db5117fec70ca6ba80bd6f61dd913ef94db8ba2bd72dc1dc2a53   ← **判据：不含时间戳，同码则必相同**
+   UtcProperties_hits  = 1
+   inner_pom_entry     = META-INF/maven/com.cnc.unicard/unicard-common/pom.properties
+   inner_pom_lines     = 5（其中 # 注释 2 行已剔除）
+   inner_pom_norm_sha  = b906ab41be1ebe396f63a52015bca9073cdf216744e9bc6f36f104805d4f9a8f   ← 两边相同即证明差异只在构建时间戳
+
+-- BOOT-INF/lib/unicard-data-1.0.0.jar
+   nested_bytes        = 298184
+   nested_sha256       = 260a852bfb43fb5c4d2c3a314271f1d8a41eb38f2a24b851adcf32ff4dbb09f8   （含时间戳，两边不同属正常）
+   inner_entry_count   = 158
+   inner_manifest_sha  = 5841bff6b42fb1080843d1081545235c8d473bf96097f7e57d57bf4523cd7252   ← **判据：不含时间戳，同码则必相同**
+   UtcProperties_hits  = 0
+   inner_pom_entry     = META-INF/maven/com.cnc.unicard/unicard-data/pom.properties
+   inner_pom_lines     = 5（其中 # 注释 2 行已剔除）
+   inner_pom_norm_sha  = 5b7d7cb8b121f54135955ca7caebefb109ecad102fa8c380af4cc59a50fe6455   ← 两边相同即证明差异只在构建时间戳
+
+==== 判读方法 ====
+  两台机器各跑一次，逐项比：
+    inner_manifest_sha 相同 → 该模块 jar 内部每个条目长度+CRC 逐条一致
+                              → 代码相同，测试机结论可外推到生产
+    pom_normalized_sha256 相同 → pom.properties 差异只在 # 注释（构建时间）
+    inner_pom_norm_sha 相同   → 嵌套 jar 内层唯一不同的那条也只是构建时间
+    UtcProperties_hits 必须 > 0，否则本比对覆盖不到真正关心的那个类
+
+  ★ 只有当「内层清单不同的条目 = 仅 pom.properties」且「内外层 pom 归一化哈希都相同」
+    两条同时成立时，才能下「同一份代码」的结论。缺一不可。

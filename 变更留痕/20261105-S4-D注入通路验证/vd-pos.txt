@@ -1,0 +1,27 @@
+==== mode=pos unit=unicard-test-threeants-official ====
+PID_before=3014703
+is_active_before=active
+backup_exists=/tmp/unicard-test-threeants-official.bak-verify-d（沿用首次备份，不覆盖——避免把已注入的版本当原始版本）
+== 改前 ExecStart ==
+ExecStart=/data/utc-unicard-test/jdk/jdk1.8.0_202/bin/java -Xms256m -Xmx256m -Dutc.agent-flow-recharge-min=NOT_A_NUMBER -jar bin/unicard-official-1.0.0.jar --spring.profiles.active=dev --spring.config.additional-location=file:./etc/ --server.port=7003
+== 改后 ExecStart ==
+ExecStart=/data/utc-unicard-test/jdk/jdk1.8.0_202/bin/java -Xms256m -Xmx256m -Dutc.agent-flow-coefficient=99 -Dutc.agent-flow-recharge-min=99 -jar bin/unicard-official-1.0.0.jar --spring.profiles.active=dev --spring.config.additional-location=file:./etc/ --server.port=7003
+restart_rc=0
+restart_since=2026-11-05 14:57:12
+port_up_after_secs=16
+== 结果 ==
+is_active=active  (Type=simple+Restart=on-failure 下不可作健康判据)
+unit_type=simple
+nrestarts=0
+PID_after=3015187
+port_listen=1
+cmdline_agent-flow-coefficient=99
+cmdline_agent-flow-recharge-min=99
+== 绑定异常里的属性名（只取 property 名，不取值）==
+bound_property_names_seen=none
+bound_property_mention_lines=0
+== 判定 ==
+POS_OK: 合法值注入后端口 7003 已 LISTEN、cmdline 含两个 -D、journal 无绑定异常 → -D 通路可用
+        注意：POS_OK 本身**不能**证明键名拼对了（未知属性会被静默忽略），
+        键名正确性由 neg / neg2 的 NEG_OK 提供。两者缺一不可。
+== 下一步：必须跑 restore 模式复原 ==

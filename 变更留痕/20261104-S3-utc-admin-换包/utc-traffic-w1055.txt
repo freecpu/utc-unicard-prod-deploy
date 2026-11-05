@@ -1,0 +1,53 @@
+probe_label=w1055
+probe_ts=2026-11-04T13:09:12+08:00
+window=10:55:00 ~ 11:10:00
+info_log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_info.2026-11-04_0.log
+info_log_bytes=22250409
+slice_lines=6894
+slice_first_ts=2026-11-04 10:55:00
+slice_last_ts=2026-11-04 11:09:00
+openapi_lines=15
+openapi_by_endpoint=     15 openapi N4;
+openapi_result_counts=     15 结果数=65;
+openapi_minutes_active=15
+openapi_first_last=10:55:00-11:09:00
+openapi_auth_fail=0
+xxl_lines=4
+xxl_minutes=      2 2026-11-04 11:00;      2 2026-11-04 11:01;
+biz_recharge=0
+biz_allocate=0
+biz_Cancel=0
+biz_CycleUpdated=0
+biz_FlowPackage=98
+biz_FlowUpdated=3
+biz_Terminal=17
+biz_UserRecharge=0
+error_level_in_info=39
+
+---- 按分钟 info 行数 ----   1498 2026-11-04 11:03
+   1435 2026-11-04 11:02
+   1416 2026-11-04 11:01
+   1346 2026-11-04 11:00
+   1184 2026-11-04 11:04
+      5 2026-11-04 10:57
+      2 2026-11-04 10:56
+      1 2026-11-04 11:09
+      1 2026-11-04 11:08
+      1 2026-11-04 11:07
+      1 2026-11-04 11:06
+      1 2026-11-04 11:05
+
+---- 按 logger 类名计数（前 15）----   6162 com.ryd.utc.unicome.mq.CardFlowQueryConsumer
+    671 com.ryd.components.iot.distribute.ConsumerImpl
+     18 com.ryd.utc.unicome.mq.CardStatusUpdateConsumer
+     17 com.ryd.components.iot.support.unicome.CellSafetyClient
+     15 com.ryd.utc.openapi.service.OpenapiReadService
+      5 com.ryd.utc.unicome.cache.UnicomeAccountCacheImpl
+      2 com.ryd.utc.unicome.mq.CardNotifyConsumer
+      2 com.ryd.utc.job.handler.FlowUpdatedHandler
+      1 com.xxl.job.core.thread.JobThread
+      1 com.xxl.job.core.executor.XxlJobExecutor
+
+---- 按日志级别计数 ----   6757 [INFO ]
+     98 [WARN ]
+     39 [ERROR]

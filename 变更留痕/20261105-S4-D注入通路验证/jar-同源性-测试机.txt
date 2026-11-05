@@ -1,0 +1,44 @@
+﻿SYNTAX_OK
+==== 源 fat jar ====
+fat_jar      = /data/utc-unicard-test/threeants/bin/unicard-official-1.0.0.jar
+fat_sha256   = 56fcc758a6e31c3778ce45e7b2c17fd7ed6234905e4e5cb76e61f6396ba7afba
+
+==== pom.properties 归一化比对（剔掉 # 注释行，故构建时间不参与）====
+pom_bytes            = 128
+pom_total_lines      = 5
+pom_comment_lines    = 2   （已剔除，构建时间戳在这里）
+pom_normalized_sha256= 11acff69fe095e7ee86013a4bc954bc3fd9763286bb4dde648239973c01125c0
+
+==== 嵌套自有模块 jar 的内层条目清单 ====
+nested_jar_count = 2
+
+-- BOOT-INF/lib/unicard-common-1.0.0.jar
+   nested_bytes        = 236204
+   nested_sha256       = 154d05f81ed925613c7e8861df0a106b544cd2d59a013a08d84cfa11e40caa30   （含时间戳，两边不同属正常）
+   inner_entry_count   = 225
+   inner_manifest_sha  = 0be33efa89bf6b9419c65fde8d16a0e54faad8fcf98eb7856e10a45bbf662e2f   ← **判据：不含时间戳，同码则必相同**
+   UtcProperties_hits  = 1
+   inner_pom_entry     = META-INF/maven/com.cnc.unicard/unicard-common/pom.properties
+   inner_pom_lines     = 5（其中 # 注释 2 行已剔除）
+   inner_pom_norm_sha  = b906ab41be1ebe396f63a52015bca9073cdf216744e9bc6f36f104805d4f9a8f   ← 两边相同即证明差异只在构建时间戳
+
+-- BOOT-INF/lib/unicard-data-1.0.0.jar
+   nested_bytes        = 298184
+   nested_sha256       = 4a0d8755f6e8c12db08c31168baede5751dcf6920408f235c83d9f86887755bd   （含时间戳，两边不同属正常）
+   inner_entry_count   = 158
+   inner_manifest_sha  = d39f683ac39605d55f73724a78ffa68ed0f3070d7a6cfba1fcde51289ce1c9b0   ← **判据：不含时间戳，同码则必相同**
+   UtcProperties_hits  = 0
+   inner_pom_entry     = META-INF/maven/com.cnc.unicard/unicard-data/pom.properties
+   inner_pom_lines     = 5（其中 # 注释 2 行已剔除）
+   inner_pom_norm_sha  = 5b7d7cb8b121f54135955ca7caebefb109ecad102fa8c380af4cc59a50fe6455   ← 两边相同即证明差异只在构建时间戳
+
+==== 判读方法 ====
+  两台机器各跑一次，逐项比：
+    inner_manifest_sha 相同 → 该模块 jar 内部每个条目长度+CRC 逐条一致
+                              → 代码相同，测试机结论可外推到生产
+    pom_normalized_sha256 相同 → pom.properties 差异只在 # 注释（构建时间）
+    inner_pom_norm_sha 相同   → 嵌套 jar 内层唯一不同的那条也只是构建时间
+    UtcProperties_hits 必须 > 0，否则本比对覆盖不到真正关心的那个类
+
+  ★ 只有当「内层清单不同的条目 = 仅 pom.properties」且「内外层 pom 归一化哈希都相同」
+    两条同时成立时，才能下「同一份代码」的结论。缺一不可。

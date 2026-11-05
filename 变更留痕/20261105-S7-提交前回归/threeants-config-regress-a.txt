@@ -1,0 +1,22 @@
+probe_label=regress-a
+probe_ts=2026-11-05T16:46:35+08:00
+host=iZbp18m5uhdl11d8c5tlo9Z
+unit=unicard-test-threeants-official
+unit_is_active=active
+unit_main_pid=3060271
+unit_exec_start=Thu 2026-11-05 16:18:45 CST
+unit_workdir=/data/utc-unicard-test/threeants
+port_listen_pid=3060271
+proc_cmdline_len=199
+proc_cmdline=/data/utc-unicard-test/jdk/jdk1.8.0_202/bin/java -Xms256m -Xmx256m -jar bin/unicard-official-1.0.0.jar --spring.profiles.active=dev --spring.config.additional-location=file:./etc/ --server.port=7003 
+proc_etimes=1670
+proc_owner=root
+has_additional_location=1
+has_config_location=0
+additional_location_value=spring.config.additional-location=file:./etc/
+profile_arg=--spring.profiles.active=dev
+d_system_props=
+unit_environment=Environment=
+search_path_config_dir=ABSENT
+search_path_toplevel_yml=0
+candidate_yml_list=/data/utc-unicard-test/threeants/etc/application-dev.yml;1602;2026-10-24 23:54|

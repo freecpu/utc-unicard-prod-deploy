@@ -1,0 +1,17 @@
+# utc-http-probe
+# label=before
+# base=http://127.0.0.1:8001/manage
+# jq=1
+# cols: id  http  bytes  sha256  code  message  datalen  shape
+H01	200	52	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	0	OK	arr:0	code|data|message|success
+H02	200	72	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	-1	请求参数非法	null	code|data|message|success
+H03	200	84	741e0fd5b665e89ffc6c1afa9a57b84dcb4e16aa3d77db7978bd5bc8ed7ba83c	-1	请求体或字段类型非法	null	code|data|message|success
+H04	200	52	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	0	OK	arr:0	code|data|message|success
+H05	200	72	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	-1	请求参数非法	null	code|data|message|success
+H06	200	84	5493c3c00d42f9100a94fc5f2b5142e9c0b4e57bc5ac6e4af1fdda6b5bebed02	0	OK	obj:2	code|data|data.content|data.totalElements|message|success
+H07	200	72	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	-1	请求参数非法	null	code|data|message|success
+H08	200	72	3273d2759348e5c633ccfdd920c8a098332090ba151fee55f8cf9a6d2c0640f0	-1	准入校验失败	null	code|data|message|success
+H09	200	52	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	0	OK	arr:0	code|data|message|success
+H10	404	133	22c3987a29707f33a81256663d1d85e41e8b1844878ace0e32e6fcdeb9bfb17d	-		-	error|message|path|status|timestamp
+H11	401	77	8c117322209a142a19a208108879410f8c4702a369f8614c2fdf4f3576859ac5	1401	Can't Find Jwt Token!	null	code|data|message|success
+H12	500	133	7cb4593bff188e37598a58ecda29c0905f76978762264e061da9b8158d825e43	-		-	error|message|path|status|timestamp

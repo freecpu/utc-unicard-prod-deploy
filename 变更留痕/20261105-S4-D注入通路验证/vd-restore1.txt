@@ -1,0 +1,14 @@
+==== mode=restore unit=unicard-test-threeants-official ====
+PID_before=3010869
+is_active_before=active
+== 还原前 ExecStart ==
+ExecStart=/data/utc-unicard-test/jdk/jdk1.8.0_202/bin/java -Xms256m -Xmx256m -Dutc.agent-flow-coefficient=NOT_A_NUMBER -jar bin/unicard-official-1.0.0.jar --spring.profiles.active=dev --spring.config.additional-location=file:./etc/ --server.port=7003
+restart_rc=0
+== 还原后 ExecStart ==
+ExecStart=/data/utc-unicard-test/jdk/jdk1.8.0_202/bin/java -Xms256m -Xmx256m -jar bin/unicard-official-1.0.0.jar --spring.profiles.active=dev --spring.config.additional-location=file:./etc/ --server.port=7003
+is_active=active
+PID_after=3011381
+cmdline_has_agent_flow_D=0
+port_listen=1
+== 判定 ==
+RESTORE_OK: 已完全复原，无 -D 残留，服务健康

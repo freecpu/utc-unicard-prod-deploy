@@ -1,0 +1,57 @@
+# error-noise-rate date=2026-11-04
+# log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_error.2026-11-04_0.log
+# log_bytes=1762346
+# ts=2026-11-04T13:05:28+08:00
+---- 事件总数（带时间戳的行）----
+2624
+---- 按小时分布 ----
+     21 2026-11-04 00
+   2301 2026-11-04 01
+     16 2026-11-04 02
+     32 2026-11-04 03
+     37 2026-11-04 04
+     23 2026-11-04 05
+     16 2026-11-04 06
+     28 2026-11-04 07
+     17 2026-11-04 08
+     27 2026-11-04 09
+     28 2026-11-04 10
+     39 2026-11-04 11
+     28 2026-11-04 12
+     11 2026-11-04 13
+---- 按小时 × 异常类名 ----
+     21 2026-11-04 00:00  NO_TYPE
+   2301 2026-11-04 01:00  NO_TYPE
+     16 2026-11-04 02:00  NO_TYPE
+     32 2026-11-04 03:00  NO_TYPE
+     37 2026-11-04 04:00  NO_TYPE
+     23 2026-11-04 05:00  NO_TYPE
+     16 2026-11-04 06:00  NO_TYPE
+     28 2026-11-04 07:00  NO_TYPE
+     17 2026-11-04 08:00  NO_TYPE
+     27 2026-11-04 09:00  NO_TYPE
+      8 2026-11-04 10:00  com.ryd.web.advice.RydException
+     20 2026-11-04 10:00  NO_TYPE
+     39 2026-11-04 11:00  NO_TYPE
+     12 2026-11-04 12:00  com.ryd.web.advice.RydException
+     16 2026-11-04 12:00  NO_TYPE
+     11 2026-11-04 13:00  NO_TYPE
+---- logger 类名分布（全天）----
+   2420 com.ryd.components.iot.support.unicome.CellSafetyClient
+    176 com.ryd.utc.unicome.mq.CardFlowQueryConsumer
+     20 com.ryd.web.advice.RydExceptionAdvices
+      8 io.undertow.request
+---- logger 类名分布（换包后，仅当传入第2参时）----
+      7 io.undertow.request
+      7 com.ryd.web.advice.RydExceptionAdvices
+      6 com.ryd.utc.unicome.mq.CardFlowQueryConsumer
+      5 com.ryd.components.iot.support.unicome.CellSafetyClient
+---- 按分钟事件数（since 12:43:14）----
+      2 2026-11-04 12:55
+      8 2026-11-04 12:56
+      4 2026-11-04 12:57
+      3 2026-11-04 13:01
+      6 2026-11-04 13:02
+      2 2026-11-04 13:03
+---- 各异常类名全天计数与首末时刻 ----
+com.ryd.web.advice.RydException                      count=20     first=10:26:05 last=12:57:31

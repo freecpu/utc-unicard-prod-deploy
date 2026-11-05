@@ -1,0 +1,38 @@
+﻿SYNTAX_OK
+==== 环境 ====
+host            = iZbp1ag3i4b42fe3z9xiy4Z
+login_user      = runyd  (uid=1001)
+sudo_available  = yes
+systemd_version = systemd 219
+
+==== ① 新特性可用性（不可用时必须退回 -p KEY | cut -d= -f2）====
+show_--value      = UNSUPPORTED（生产须用 cut -d= -f2）
+MainPID(cut法)    = 13930
+NRestarts         = ABSENT（此 systemd 无该属性，脚本里此项会为空，属信息缺失非假阴性）
+
+==== ② 以当前用户读 root 进程 /proc/<pid>/cmdline 的能力 ====
+target_pid        = 13930
+proc_owner        = root
+cmdline_perm      = -r--r--r-- root root
+read_len_nosudo   = 170
+read_len_sudo     = 170
+VERDICT           = READABLE_WITHOUT_SUDO（两种写法都能工作）
+cmdline_len_used  = 170
+has_agent_flow_D  = 0
+
+==== ③ 重启策略（决定注入错值后的失败形态与回滚步骤）====
+Type                    = simple
+Restart                 = always
+RestartUSec             = 100ms
+StartLimitBurst         = 5
+StartLimitIntervalUSec  = <ABSENT>
+ExecMainStartTimestamp  = Wed 2026-10-28 01:12:59 CST
+
+  ★ 若 Restart=always 且 RestartUSec 很小：注入无法绑定的值会让单元以该间隔
+    疯狂重启，迅速撞 StartLimitBurst 变成 failed 并**停在那里**，
+    回滚后必须额外执行 systemctl reset-failed 才能重新拉起。
+
+==== 结论汇总（供 SOP 引用）====
+unit              = ryd-unicard-official
+is_active         = active
+PROBE_DONE

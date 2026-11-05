@@ -1,0 +1,43 @@
+# ---- 临时与工具产物 ----
+*.tmp
+*.bak
+*.swp
+*~
+.COMMIT_MSG*
+.DS_Store
+Thumbs.db
+
+# ---- 本地凭据 / 密钥：任何情况下都不入库 ----
+# 本仓的证据文件里只允许出现「长度与哈希」，不允许出现凭据正文。
+# 提交前必须跑门禁（见 README.md §5）：
+#   bash scripts/audit-tmp-creds.sh selftest
+#   AUDIT_DEPTH=99 bash scripts/audit-tmp-creds.sh .
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+.env
+.env.*
+!.env.example
+credentials*
+*secret*
+*token*.txt
+login.json
+
+# ---- 构建产物：本仓是操作仓，不存二进制 ----
+*.jar
+*.war
+*.zip
+*.tar.gz
+dist/
+target/
+
+# ---- 大体积运行日志：只在变更留痕里存「摘录」，不存原始日志 ----
+*.log
+变更留痕/**/*.log
+
+# ---- 脚本在远端产生的中间文件（若误拉回本地）----
+manifest-*.txt.tmp
+inner-*.txt.tmp

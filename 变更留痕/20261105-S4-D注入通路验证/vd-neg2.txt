@@ -1,0 +1,29 @@
+==== mode=neg2 unit=unicard-test-threeants-official ====
+PID_before=3013101
+is_active_before=active
+backup_exists=/tmp/unicard-test-threeants-official.bak-verify-d（沿用首次备份，不覆盖——避免把已注入的版本当原始版本）
+== 改前 ExecStart ==
+ExecStart=/data/utc-unicard-test/jdk/jdk1.8.0_202/bin/java -Xms256m -Xmx256m -Dutc.agent-flow-coefficient=NOT_A_NUMBER -jar bin/unicard-official-1.0.0.jar --spring.profiles.active=dev --spring.config.additional-location=file:./etc/ --server.port=7003
+== 改后 ExecStart ==
+ExecStart=/data/utc-unicard-test/jdk/jdk1.8.0_202/bin/java -Xms256m -Xmx256m -Dutc.agent-flow-recharge-min=NOT_A_NUMBER -jar bin/unicard-official-1.0.0.jar --spring.profiles.active=dev --spring.config.additional-location=file:./etc/ --server.port=7003
+restart_rc=0
+restart_since=2026-11-05 14:56:27
+port_up_after_secs=SKIPPED(neg)
+== 结果 ==
+is_active=active  (Type=simple+Restart=on-failure 下不可作健康判据)
+unit_type=simple
+nrestarts=0
+PID_after=3014703
+port_listen=0
+cmdline_agent-flow-recharge-min=NOT_A_NUMBER
+== 绑定异常里的属性名（只取 property 名，不取值）==
+     18 BindException
+      1 ConversionFailedException
+      9 Failed to bind
+     11 utc.agent-flow-recharge-min
+bound_property_names_seen=utc.agent-flow-recharge-min,
+bound_property_mention_lines=11
+== 判定 ==
+NEG_OK: 无效值触发绑定异常且异常里点名 utc.agent-flow-recharge-min, → 该键名确实被 Spring 绑定到目标字段；
+        同时端口未 LISTEN → 服务确实因它起不来。两条硬信号同时成立。
+== 下一步：必须跑 restore 模式复原 ==
