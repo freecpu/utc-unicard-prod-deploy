@@ -1,0 +1,31 @@
+probe_label=n4-G3
+probe_ts=2026-11-18T17:45:08+08:00
+window=17:43:37 ~ now
+info_log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_info.2026-11-18_0.log
+info_log_bytes=30175819
+slice_lines=2
+slice_first_ts=2026-11-18 17:45:00
+slice_last_ts=2026-11-18 17:45:05
+openapi_lines=2
+openapi_by_endpoint=      1 openapi N1;      1 openapi N4;
+openapi_result_counts=      1 结果数=66;
+openapi_minutes_active=1
+openapi_first_last=17:45:00-17:45:05
+openapi_auth_fail=0
+xxl_lines=0
+xxl_minutes=
+biz_recharge=0
+biz_allocate=0
+biz_Cancel=0
+biz_CycleUpdated=0
+biz_FlowPackage=0
+biz_FlowUpdated=0
+biz_Terminal=0
+biz_UserRecharge=0
+error_level_in_info=0
+
+---- 按分钟 info 行数 ----      2 2026-11-18 17:45
+
+---- 按 logger 类名计数（前 15）----      2 com.ryd.utc.openapi.service.OpenapiReadService
+
+---- 按日志级别计数 ----      2 [INFO ]

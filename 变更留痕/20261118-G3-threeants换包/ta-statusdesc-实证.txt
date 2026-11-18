@@ -1,0 +1,4 @@
+# ta-statusdesc-probe ts=2026-11-18T17:46:16+0800
+# iccid_masked=8986****2257 jq=0
+http=800 code=- status= statusDesc_present=0 statusDesc=- message=NON_JSON_OR_NO_JQ
+VERDICT=HTTP_FAIL

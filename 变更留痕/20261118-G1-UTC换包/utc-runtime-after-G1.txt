@@ -1,0 +1,48 @@
+probe_label=after-G1
+probe_ts=2026-11-18T17:26:59+08:00
+host=iZbp14dercyoxmdg9y61idZ
+unit_is_active=active
+unit_main_pid=993803
+unit_exec_start=Wed 2026-11-18 17:25:58 CST
+unit_type=forking
+unit_pid_file=/data/logs/ryd-utc-admin/ryd-utc-admin.pid
+port_listen_count=1
+port_listen_pid=993803
+probe_pid_match=YES
+proc_cmdline_len=137
+proc_cmdline_profile=spring.profiles.active=prod
+proc_cmdline_jar=ryd-utc-admin.jar
+proc_etimes_sec=61
+proc_owner=root
+jar_path=/data/apps/ryd-utc-admin/ryd-utc-admin.jar
+jar_bytes=108562566
+jar_mtime=2026-11-18 16:55:54.765763831 +0800
+jar_sha256=f3ddcdb77beabb36ae3b1dc8c98366a235a65465e67843cd54337ee5950a9060
+jar_md5=52ae636a189a6eb6e0d6c3891cc87dbe
+class_count_outer_classes=49
+inner_lib_bytes=BOOT-INF/lib/utc-common-1.0.0-SNAPSHOT.jar=127552;BOOT-INF/lib/utc-system-1.0.0-SNAPSHOT.jar=17489;BOOT-INF/lib/utc-stock-1.0.0-SNAPSHOT.jar=40434;BOOT-INF/lib/utc-mall-1.0.0-SNAPSHOT.jar=89994;BOOT-INF/lib/utc-unicome-1.0.0-SNAPSHOT.jar=35936;BOOT-INF/lib/utc-job-1.0.0-SNAPSHOT.jar=17253;
+cline_class_FlowAccountCancelListener=1
+cline_class_FlowAccountRemoveTerminalListener=1
+cline_class_CycleUpdatedHandler=1
+cline_class_FlowAccountEvent=1
+cline_class_CacheInitRunner=1
+cline_class_TerminalStatusListener=1
+inner_lib_files_seen=6
+log_root=/data/logs/ryd-utc-admin
+info_log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_info.2026-11-18_0.log
+error_log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_error.2026-11-18_0.log
+started_marker_count=1
+started_last_line=2026-11-18 17:26:13,891 [INFO ] [ryd-utc-admin] [main] com.ryd.utc.UtcAdminApp - Started UtcAdminApp in 14.227 seconds (JVM running for 14.893)
+active_profiles_line=profiles are active: prod
+info_log_lines=149498
+info_log_last_ts=2026-11-18 17:27:00,249 
+error_total_lines=21606
+error_exception_count=2576
+error_distinct_types=com.fasterxml.jackson.databind.JsonMappingException,com.ryd.components.iot.IoTGatewayException,com.ryd.core.exception.RydException,com.ryd.web.advice.RydException,java.lang.NullPointerException,JsonMappingException,org.springframework.http.converter.HttpMessageNotWritableException,org.springframewor
+error_last_line=	at java.lang.Thread.run(Thread.java:748)
+disk_avail=183G
+job_tail_hits=14
+job_tail_last=xxl-job
+---- 运行态探针（after-G1）----
+cat: /tmp/utc-runtime-after-G1.txt: input file is output file
+---- 已写入 /tmp/utc-runtime-after-G1.txt ----

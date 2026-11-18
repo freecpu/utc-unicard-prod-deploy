@@ -1,0 +1,60 @@
+# error-noise-rate date=2026-11-18
+# log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_error.2026-11-18_0.log
+# log_bytes=3125703
+# ts=2026-11-18T16:45:32+08:00
+---- 事件总数（带时间戳的行）----
+4943
+---- 按小时分布 ----
+     16 2026-11-18 00
+   2290 2026-11-18 01
+     18 2026-11-18 02
+     22 2026-11-18 03
+     18 2026-11-18 04
+     37 2026-11-18 05
+     25 2026-11-18 06
+     25 2026-11-18 07
+     10 2026-11-18 08
+     30 2026-11-18 09
+     39 2026-11-18 10
+     32 2026-11-18 11
+      8 2026-11-18 12
+   2299 2026-11-18 13
+     15 2026-11-18 14
+     34 2026-11-18 15
+     25 2026-11-18 16
+---- 按小时 × 异常类名 ----
+     16 2026-11-18 00:00  NO_TYPE
+   2290 2026-11-18 01:00  NO_TYPE
+     18 2026-11-18 02:00  NO_TYPE
+     22 2026-11-18 03:00  NO_TYPE
+     18 2026-11-18 04:00  NO_TYPE
+     37 2026-11-18 05:00  NO_TYPE
+     25 2026-11-18 06:00  NO_TYPE
+     25 2026-11-18 07:00  NO_TYPE
+     10 2026-11-18 08:00  NO_TYPE
+     30 2026-11-18 09:00  NO_TYPE
+     14 2026-11-18 10:00  com.ryd.web.advice.RydException
+     25 2026-11-18 10:00  NO_TYPE
+      3 2026-11-18 11:00  com.ryd.web.advice.RydException
+     29 2026-11-18 11:00  NO_TYPE
+      8 2026-11-18 12:00  NO_TYPE
+      3 2026-11-18 13:00  com.ryd.web.advice.RydException
+   2296 2026-11-18 13:00  NO_TYPE
+      1 2026-11-18 14:00  com.ryd.web.advice.RydException
+     14 2026-11-18 14:00  NO_TYPE
+     34 2026-11-18 15:00  NO_TYPE
+      1 2026-11-18 16:00  com.ryd.web.advice.RydException
+     24 2026-11-18 16:00  NO_TYPE
+---- logger 类名分布（全天）----
+   4716 com.ryd.components.iot.support.unicome.CellSafetyClient
+    193 com.ryd.utc.unicome.mq.CardFlowQueryConsumer
+     22 com.ryd.web.advice.RydExceptionAdvices
+      5 org.springframework.amqp.rabbit.connection.CachingConnectionFactory
+      5 com.ryd.utc.unicome.mq.CardStatusUpdateConsumer
+      2 io.undertow.request
+---- logger 类名分布（换包后，仅当传入第2参时）----
+(未传第2参 HH:MM:SS，跳过)
+---- 各异常类名全天计数与首末时刻 ----
+com.fasterxml.jackson.databind.JsonMappingException  count=1      first=14:30:15 last=14:30:15
+com.ryd.web.advice.RydException                      count=22     first=10:32:05 last=16:45:31
+java.lang.NullPointerException                       count=1      first=14:30:15 last=14:30:15

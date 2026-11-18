@@ -1,0 +1,19 @@
+# error-delta label=g3obs since=2026-11-18 17:43:37
+# log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_error.2026-11-18_0.log
+# ts=2026-11-18T17:45:08+08:00
+---- timestamped_lines_per_minute_since ----
+---- slice_total_lines ----
+1
+---- exception_type_counts ----
+---- exception_type_counts_runtime_regex ----
+---- bare_exception_preceding_char ----
+---- bare_exception_line_count ----
+0
+---- timestamped_line_index ----
+---- first_last_occurrence_per_type ----
+---- probe_attribution_markers ----
+no-such-endpoint=0
+/no/such/path=0
+octet-stream=0
+JwtToken=0
+Not Found=0

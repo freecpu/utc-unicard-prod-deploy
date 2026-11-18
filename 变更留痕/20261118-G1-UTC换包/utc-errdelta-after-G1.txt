@@ -1,0 +1,36 @@
+# error-delta label=after-G1 since=2026-11-18 17:25:58
+# log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_error.2026-11-18_0.log
+# ts=2026-11-18T17:27:03+08:00
+---- timestamped_lines_per_minute_since ----
+      2 2026-11-18 17:27
+---- slice_total_lines ----
+135
+---- exception_type_counts ----
+     10 com.ryd.core.exception.RydException
+      4 RydException
+      1 org.springframework.web.util.NestedServletException
+      1 com.ryd.web.advice.RydException
+---- exception_type_counts_runtime_regex ----
+     10 com.ryd.core.exception.RydException
+      4 RydException
+      1 org.springframework.web.util.NestedServletException
+      1 Exception
+      1 com.ryd.web.advice.RydException
+---- bare_exception_preceding_char ----
+      1 prev=[ ]
+---- bare_exception_line_count ----
+1
+---- timestamped_line_index ----
+2026-11-18 17:27:02	types=com.ryd.web.advice.RydException,	probe=-
+2026-11-18 17:27:02	types=-	probe=H12,
+---- first_last_occurrence_per_type ----
+com.ryd.core.exception.RydException	count=10	first=com.ryd.core.except	last=Caused by: com.ryd.
+com.ryd.web.advice.RydException	count=1	first=2026-11-18 17:27:02	last=2026-11-18 17:27:02
+org.springframework.web.util.NestedServletException	count=1	first=org.springframework	last=org.springframework
+RydException	count=11	first=2026-11-18 17:27:02	last=Caused by: com.ryd.
+---- probe_attribution_markers ----
+no-such-endpoint=0
+/no/such/path=1
+octet-stream=0
+JwtToken=0
+Not Found=0

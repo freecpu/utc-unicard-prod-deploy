@@ -1,0 +1,11 @@
+# ta-http-probe
+# label=before-G3
+# base=http://127.0.0.1:7003/api/web
+# jq=0
+# cols: id  http  bytes  sha256  sha_norm  code  message  datalen  shape
+T01	800	18	bc6c883fa59ba6d34f569405ba8fa7267acabecbea6d3695e0467019d9f50749	bc6c883fa59ba6d34f569405ba8fa7267acabecbea6d3695e0467019d9f50749	-	NON_JSON	-	未找到卡信息
+T02	800	23	c24327e9c9cab78c51bb0cdae3ef41607ed5dba6addea253aec0e42d67cb4177	c24327e9c9cab78c51bb0cdae3ef41607ed5dba6addea253aec0e42d67cb4177	-	NON_JSON	-	iccid位数不够七位
+T03	800	18	bc6c883fa59ba6d34f569405ba8fa7267acabecbea6d3695e0467019d9f50749	bc6c883fa59ba6d34f569405ba8fa7267acabecbea6d3695e0467019d9f50749	-	NON_JSON	-	未找到卡信息
+T04	800	18	bc6c883fa59ba6d34f569405ba8fa7267acabecbea6d3695e0467019d9f50749	bc6c883fa59ba6d34f569405ba8fa7267acabecbea6d3695e0467019d9f50749	-	NON_JSON	-	未找到卡信息
+T05	200	1256	957b01bf87009d4e4e7598503184f835e865a09ec286eddbe7c963b0a4486a05	957b01bf87009d4e4e7598503184f835e865a09ec286eddbe7c963b0a4486a05	-	NON_JSON	-	{"recordset":[{"iccid":"[MASKED]","nation":false,"status":0},{"iccid":"[MASKED]
+T06	404	9	0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5	0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5	-	NON_JSON	-	Not Found
