@@ -1,0 +1,27 @@
+﻿===== [UD1] assets 目录清单 =====
+total 2244
+drwxr-xr-x 2 nlxq nlxq    4096 Oct 26 15:26 .
+drwxr-xr-x 4 nlxq nlxq      70 Oct 26 15:29 ..
+-rw-r--r-- 1 nlxq nlxq     480 Oct 22 11:53 403.d54f1a54.css
+-rw-r--r-- 1 nlxq nlxq     887 Oct 22 11:53 403.e2580106.js
+-rw-r--r-- 1 nlxq nlxq     518 Oct 22 11:53 account.4344eb1f.js
+-rw-r--r-- 1 nlxq nlxq     597 Oct 22 11:53 agentFlow.1d162a30.js
+-rw-r--r-- 1 nlxq nlxq     588 Oct 22 11:53 agentRecharge.bf5a9b9c.js
+-rw-r--r-- 1 nlxq nlxq    2696 Oct 22 11:53 AgentRechargeEdit.278ee5ea.js
+-rw-r--r-- 1 nlxq nlxq     155 Oct 22 11:53 AgentRechargeEdit.d2fd4902.css
+-rw-r--r-- 1 nlxq nlxq     900 Oct 22 11:53 allocate.562421cf.js
+-rw-r--r-- 1 nlxq nlxq     136 Oct 22 11:53 AllocateAgent.a2941165.css
+-rw-r--r-- 1 nlxq nlxq    3656 Oct 22 11:53 AllocateAgent.b5d158d7.js
+-rw-r--r-- 1 nlxq nlxq    4787 Oct 22 11:53 AllocateUser.07f97519.js
+-rw-r--r-- 1 nlxq nlxq     136 Oct 22 11:53 AllocateUser.a2941165.css
+-rw-r--r-- 1 nlxq nlxq    5740 Oct 22 11:53 avatar.514995a3.webp
+-rw-r--r-- 1 nlxq nlxq      21 Oct 22 11:53 Dashboard.162b542b.css
+-rw-r--r-- 1 nlxq nlxq     395 Oct 22 11:53 Dashboard.e38a4dd1.js
+-rw-r--r-- 1 nlxq nlxq    3784 Oct 22 11:53 el-form.d10bb01f.css
+-rw-r--r-- 1 nlxq nlxq    3927 Oct 22 11:53 el-input-number.643e34ac.css
+===== [UD2] index 引用的两件 assets 指纹 =====
+e6a04f933c5925ab4be359741b7f93ed18dc00bcd858dfcb81505d7c609c24dd  /data/html/ryd-utc-admin/dist/assets/index.508ff2fc.js
+1386131 bytes mtime=2026-10-22 11:53:14.000000000 +0800
+293e09e129cfcdad9dcb6f1dd13e88871a0e0ff548b92abfba17efcfdd9734b2  /data/html/ryd-utc-admin/dist/assets/index.293e09e1.css
+411184 bytes mtime=2026-10-22 11:53:14.000000000 +0800
+===== RECON-UD DONE =====

@@ -1,0 +1,39 @@
+﻿===== [E0] 主机与时刻 =====
+0001
+2026-11-18T11:02:37+08:00
+ 11:02:37 up 183 days, 14:22,  7 users,  load average: 0.14, 0.09, 0.02
+===== [E1] java 进程 =====
+(无 java 进程)
+===== [E2] docker 容器 =====
+gamebuddy-nginx | nginx:alpine | Up 3 weeks (healthy) | 0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp, 0.0.0.0:8003->8003/tcp, [::]:8003->8003/tcp
+token-hub-nginx | nginx:alpine | Up 7 weeks | 80/tcp, 0.0.0.0:8001-8002->8001-8002/tcp, [::]:8001-8002->8001-8002/tcp
+token-hub | token-hub:latest | Up 7 weeks (healthy) | 8000/tcp
+searxng-valkey | valkey/valkey:9-alpine | Up 4 months | 6379/tcp
+searxng-core | searxng/searxng:latest | Up 2 months | 0.0.0.0:31199->8080/tcp
+===== [E3] agent-mp 目录痕迹 =====
+/data/cloudnest/docs/云桌面多Agent远程协作系统 需求说明书（细化版）.md
+/data/cloudnest/agents
+/home/runyd/game-companion/AGENTS.md
+(find 结束)
+===== [E4] 监听端口 =====
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 127.0.0.1:9090          0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.54:53           0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:31199           0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:8002            0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:8003            0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:8001            0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:30011           0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:30012           0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:30013           0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:28005           0.0.0.0:*               LISTEN     
+tcp6       0      0 :::57890                :::*                    LISTEN     
+tcp6       0      0 :::57891                :::*                    LISTEN     
+tcp6       0      0 :::443                  :::*                    LISTEN     
+tcp6       0      0 :::22                   :::*                    LISTEN     
+===== RECON-E DONE =====

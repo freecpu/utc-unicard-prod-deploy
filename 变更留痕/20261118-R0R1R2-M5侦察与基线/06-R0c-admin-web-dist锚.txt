@@ -1,0 +1,31 @@
+﻿===== [UC1] ryd-utc.conf upstream/proxy 目标 =====
+6:upstream utc.nlxq.net {
+7:    server 127.0.0.1:8001 max_fails=3 fail_timeout=2s;
+11:server {
+31:      proxy_pass http://utc.nlxq.net;
+35:        proxy_pass http://127.0.0.1:17109/tailon/;
+===== [UC2] admin-web 现役 dist 锚（R1）=====
+total 12
+drwxr-xr-x 4 nlxq nlxq   70 Oct 26 15:29 .
+drwxr-xr-x 5 root root   75 Oct 26 15:43 ..
+drwxr-xr-x 2 nlxq nlxq 4096 Oct 26 15:26 assets
+-rw-r--r-- 1 nlxq nlxq  685 Oct 22 11:53 index.html
+drwxr-xr-x 3 nlxq nlxq   16 Oct 26 15:26 static
+-rw-r--r-- 1 nlxq nlxq 1932 Aug 11 11:31 table.json
+-- index.html 引用的 bundle：
+href="./assets/index.293e09e1.css"
+href="https://at.alicdn.com/t/font_830376_qzecyukz0s.css"
+src="./assets/index.508ff2fc.js"
+-- index.html 指纹：
+d9ef7d95dd29fb6611e1904c9cdd9b8217c3b684ccf050fa9037f2428170f6e7  /data/html/ryd-utc-admin/dist/index.html
+685 bytes mtime=2026-10-22 11:53:14.000000000 +0800
+-- 主 bundle 指纹（index 引用者）：
+===== [UC3] /data/html/ryd-utc-admin 目录形态（备份惯例）=====
+total 588
+drwxr-xr-x 5 root root     75 Oct 26 15:43 .
+drwxr-xr-x 4 root root     67 Nov 23  2024 ..
+drwxr-xr-x 4 nlxq nlxq     70 Oct 26 15:29 dist
+drwxr-xr-x 4 root root     70 Apr 13  2026 dist.20261026.bak
+drwxr-xr-x 4 root root     70 Jan 14  2026 dist.bak
+-rw-r--r-- 1 root root 601787 Apr 13  2026 dist.zip
+===== RECON-UC DONE =====

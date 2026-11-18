@@ -1,0 +1,108 @@
+﻿===== [U0] 主机与时刻 =====
+iZbp14dercyoxmdg9y61idZ
+2026-11-18T10:58:14+08:00
+ 10:58:14 up 1378 days, 17 min,  1 user,  load average: 0.02, 0.01, 0.00
+===== [U1] java 进程与容器 =====
+  89942 root     118239675 /usr/local/java/bin/java -server -Xmx512m -Xms512m -jar xxl-job-admin.jar
+1850932 root     1289710 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+2074989 root     1203300 /usr/local/java/bin/java -server -Xmx4G -Xms4G -XX:+UseG1GC -XX:MaxGCPauseMillis=90 -Dspring.profiles.active=prod -jar ryd-utc-admin.jar
+===== [U2] systemd 单元清单（unicard/ryd/xxl/nginx 相关）=====
+openresty.service                          enabled         disabled
+ryd-utc-admin.service                      enabled         disabled
+xxl-job-admin.service                      enabled         disabled
+===== [U3] R1 锚：现役 jar =====
+ba16cd657e6e645af24f14cc7a6fd34f802cdcbc441dd988cfc9ed055b904262  /data/apps/ryd-utc-admin/ryd-utc-admin.jar
+108561064 bytes mtime=2026-11-04 12:42:40.413968368 +0800 owner=root:root
+===== [U4] R1 补采：.env / service.sh / unit 指纹（挂账⑩）=====
+49d0eb8fa46423ff2592b35f891c9fdaa69ce3853f5efe0d38e6d7a572c4195b  /data/apps/ryd-utc-admin/.env
+338 bytes mtime=2023-03-11 18:21:09.338580886 +0800 owner=root:root
+76bd9f6f635bc4f9e462c9b4b227c9550c34b95a7bd944055311201226333536  /data/apps/ryd-utc-admin/custom.env
+33 bytes mtime=2023-02-19 12:51:51.732126754 +0800 owner=root:root
+2ffe750f0211db65bf2001edd67caf0d6bf051d5bb10a08fac4b4716a82178b9  /data/apps/ryd-utc-admin/service.sh
+12888 bytes mtime=2023-02-18 21:55:14.559659522 +0800 owner=root:root
+d0efa566aa12421f1f2f654fd5d6d3372de668055e38f330f6cdd6dab84dbc77  /etc/systemd/system/ryd-utc-admin.service
+657 bytes mtime=2026-10-28 01:09:40.335082479 +0800 owner=root:root
+===== [U5] 运行态交叉 =====
+Type=forking
+Restart=on-failure
+MainPID=2074989
+ExecMainStartTimestamp=Wed 2026-11-04 12:43:14 CST
+tcp        0      0 0.0.0.0:8000            0.0.0.0:*               LISTEN      -                   
+tcp6       0      0 :::8001                 :::*                    LISTEN      -                   
+===== [U6] 网关进程与配置路径 =====
+  93674 nginx: master process /usr/local/openresty/nginx/sbin/nginx
+ 164900 nginx: worker process
+-- /usr/local/openresty/nginx/sbin/nginx -V:
+nginx version: openresty/1.19.9.1
+built by gcc 9.3.1 20200408 (Red Hat 9.3.1-2) (GCC) 
+-- /usr/local/openresty/nginx/sbin/nginx -t:
+nginx: the configuration file /usr/local/openresty/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /usr/local/openresty/nginx/conf/nginx.conf test is successful
+===== [U7] 网关 server_name/root/listen 抽取（不打印全文防凭据）=====
+-- /usr/local/openresty/nginx/conf/nginx.conf (mtime 2023-02-18 18:20:17.697722289 +0800):
+18:    include       mime.types;
+36:    #    listen       80;
+37:    #    server_name  localhost;
+44:    #        root   html;
+54:    #        root   html;
+57:        # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+63:        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+66:        #    root           html;
+70:        #    include        fastcgi_params;
+85:    #    listen       8000;
+86:    #    listen       somename:8080;
+87:    #    server_name  somename  alias  another.alias;
+90:    #        root   html;
+99:    #    listen       443 ssl;
+100:    #    server_name  localhost;
+112:    #        root   html;
+116:    include /usr/local/openresty/nginx/conf/servers/*.conf;
+===== [U8] web 目录候选 =====
+-- /data/apps:
+total 8
+drwxr-xr-x 6 root     root      103 Sep 14 21:24 .
+drwxr-xr-x 8 root     root       79 May 28  2025 ..
+drwxr-xr-x 7 rabbitmq rabbitmq 4096 Feb 17  2023 rabbitmq_server-3.9.16
+drwxr-xr-x 2 root     root     4096 Nov  4 12:43 ryd-utc-admin
+drwxr-xr-x 2 root     root       79 Feb 18  2023 xxl-job-admin
+drwxr-xr-x 2 root     root       79 Feb 18  2023 xxl-job-admin.bak
+-- /usr/local/openresty/nginx/html:
+total 8
+drwxr-xr-x  2 root root   40 Feb 18  2023 .
+drwxr-xr-x 11 root root  151 Feb 18  2023 ..
+-rw-r--r--  1 root root  982 Aug  7  2021 50x.html
+-rw-r--r--  1 root root 1097 Aug  7  2021 index.html
+-- /data/apps/ryd-utc-admin:
+total 1165436
+drwxr-xr-x 2 root root      4096 Nov  4 12:43 .
+drwxr-xr-x 6 root root       103 Sep 14 21:24 ..
+-rw-r--r-- 1 root root       629 Jul 23  2023 application-prod.yml
+-rw-r--r-- 1 root root        33 Feb 19  2023 custom.env
+-rw-r--r-- 1 root root       338 Mar 11  2023 .env
+-rwxr-xr-x 1 root root 108372316 Mar 12  2023 ryd-utc-admin_20230312.jar
+-rwxr-xr-x 1 root root 108387536 Mar 26  2023 ryd-utc-admin_20230326.jar
+-rwxr-xr-x 1 root root 108399925 Jul 23  2023 ryd-utc-admin_20230723.jar
+-rw-r--r-- 1 root root 108528301 Sep 28 21:31 ryd-utc-admin.20260928-2.jar
+-rw-r--r-- 1 root root 108529018 Oct 26 15:41 ryd-utc-admin.20261027.jar
+-rw-r--r-- 1 nlxq nlxq 108527467 Sep 28 12:36 ryd-utc-admin.bakk20260928.jar
+-rw-r--r-- 1 root root 108528492 Sep 28 21:32 ryd-utc-admin.bakk20261026.jar
+-rw-r--r-- 1 root root 108561064 Nov  4 12:42 ryd-utc-admin.jar
+-rw-r--r-- 1 root root 108520392 Apr 13  2026 ryd-utc-admin.jar20260928
+-rw-r--r-- 1 root root 108439010 Aug  5  2024 ryd-utc-admin.jar.bak
+-rw-r--r-- 1 nlxq nlxq 108553312 Oct 27 16:05 ryd-utc-admin.jar.bak-20261104-pre-a3d7ff8
+-rwxr-xr-x 1 root root     12888 Feb 18  2023 service.sh
+===== [U9] N4 调用方来源（openresty access log，只抽 IP/端点/计数）=====
+85170312 bytes mtime=2026-11-18 10:56:29.254490549 +0800
+-- 今日 openapi 调用按来源 IP 计数：
+-- 今日 openapi 端点分布（URL 长数字掩码）：
+-- 最近 3 条 openapi 行（掩码）：
+193.47.62.29 - - [30/Oct/2026:21:22:01 +0800] "HEAD /api/openapi.json HTTP/1.1" 404 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+193.47.62.29 - - [30/Oct/2026:21:22:02 +0800] "HEAD /docs/openapi.json HTTP/1.1" 404 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+118.254.110.195 - - [31/Oct/2026:19:33:23 +0800] "GET /openapi.json HTTP/1.1" 404 561 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122 Safari/537.36"
+===== [U10] agent-mp 本机痕迹 =====
+(find 结束；空＝本机无 agent-mp 目录痕迹)
+===== [U11] 磁盘 =====
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vdb1       200G   17G  184G   9% /data
+/dev/vda3        40G   10G   30G  26% /
+===== RECON-U DONE =====

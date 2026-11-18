@@ -1,0 +1,155 @@
+﻿===== [TB1] nginx servers/*.conf =====
+total 96
+drwxr-xr-x 2 root root 4096 Sep 14 21:13 .
+drwxr-xr-x 3 root root 4096 May 22  2024 ..
+-rw-r--r-- 1 root root 1253 Aug 27  2023 cacert.pem
+-rw-r--r-- 1 root root  971 Mar 28  2023 huishuo.nlxq.net.conf
+-rw-r--r-- 1 root root 1347 Apr 23  2023 huishuo.test.nlxq.net.conf
+-rw-r--r-- 1 root root 1422 Jun 20  2023 mysgpt.nlsq.net.conf
+-rw-r--r-- 1 root root 1199 Apr  7  2021 nlxqonline.nlxq.net.conf
+-rw-r--r-- 1 root root 1675 Aug 27  2023 privkey.pem
+-rw-r--r-- 1 root root 1322 Jul 24  2023 smartchat.nlxq.net.conf
+-rw-r--r-- 1 root root  943 Sep  5  2021 sp.nlxq.net.conf
+-rw-r--r-- 1 root root 2991 Sep 14 21:13 threeantsonline.nlxq.net.conf
+-rw-r--r-- 1 root root 1675 Aug 29 10:43 threeantsonline.nlxq.net.key
+-rw-r--r-- 1 root root 1675 Aug 27  2023 threeantsonline.nlxq.net.key.bak
+-rw-rw-r-- 1 nlxq nlxq 1675 Aug 27  2024 threeantsonline.nlxq.net.key_bak20250819
+-rw-r--r-- 1 root root 1675 Aug 19  2025 threeantsonline.nlxq.net.key.bak20260829
+-rw-r--r-- 1 root root 8863 Aug 29 10:43 threeantsonline.nlxq.net.pem
+-rw-r--r-- 1 root root 3896 Aug 27  2023 threeantsonline.nlxq.net.pem.bak
+-rw-rw-r-- 1 nlxq nlxq 4776 Aug 27  2024 threeantsonline.nlxq.net.pem_bak20250819
+-rw-r--r-- 1 root root 5555 Aug 19  2025 threeantsonline.nlxq.net.pem.bak20260829
+-rw-r--r-- 1 root root  144 Dec  7  2021 www.nlxq.net.conf
+---- /usr/local/nginx/conf/servers/huishuo.nlxq.net.conf (mtime 2023-03-28 00:03:48.000000000 +0800):
+7:    listen 80;
+8:    server_name   huishuo.nlxq.net;
+18:    location / {
+19:      root   /usr/local/ryd-notice/bin/dist/;
+23:    location ~ ^/api/.* {
+30:      proxy_pass http://huishuo.nlxq.net;
+---- /usr/local/nginx/conf/servers/huishuo.test.nlxq.net.conf (mtime 2023-04-23 22:23:46.000000000 +0800):
+7:    listen 80;
+8:    server_name   huishuo.test.nlxq.net;
+18:    location / {
+19:      root   /usr/local/ryd-notice-test/bin/dist/;
+23:    location ~ ^/api/.* {
+30:      proxy_pass http://huishuo.test.nlxq.net;
+33:    location ~ ^/manage/.* {
+40:      proxy_pass http://huishuo.test.nlxq.net;
+---- /usr/local/nginx/conf/servers/mysgpt.nlsq.net.conf (mtime 2023-06-20 11:17:56.854651585 +0800):
+7:    listen 80;
+8:    server_name   mysgpt.nlxq.net;
+19:    location ^~ /
+21:         proxy_pass http://220.250.36.224:3001;
+---- /usr/local/nginx/conf/servers/nlxqonline.nlxq.net.conf (mtime 2021-04-07 15:05:08.988188307 +0800):
+12:    listen 80;
+13:    server_name		nlxqonline.nlxq.net;
+23:    location / {
+24:      root   /usr/local/unicard/bin/dist/;
+28:    location /image/ {
+29:      root   /;
+33:    location ~ ^/api/web/.* {
+40:      proxy_pass http://nlxqonline.nlxq.net;
+---- /usr/local/nginx/conf/servers/smartchat.nlxq.net.conf (mtime 2023-07-24 15:22:12.000000000 +0800):
+7:    listen 80;
+8:    server_name   smartchat.nlxq.net;
+18:    location / {
+19:      root   /usr/local/ryd-smartchat/bin/dist/;
+23:    location ~ ^/api/.* {
+30:      proxy_pass http://smartchat.nlxq.net;
+33:    location ~^/manage/.* {
+40:      proxy_pass http://smartchat.nlxq.net;
+---- /usr/local/nginx/conf/servers/sp.nlxq.net.conf (mtime 2021-09-05 15:22:29.104909493 +0800):
+7:    listen 80;
+8:    server_name   sp.nlxq.net;
+18:    location / {
+19:      root   /usr/local/unicard/bin/html/sp/;
+23:    location ~ ^/manage/.* {
+30:      proxy_pass http://sp.nlxq.net;
+---- /usr/local/nginx/conf/servers/threeantsonline.nlxq.net.conf (mtime 2026-09-14 21:13:55.016368504 +0800):
+12:    listen 443 ;
+13:    server_name		threeantsonline.nlxq.net;
+27:    location / {
+28:      root   /usr/local/ryd-unicard/bin/dist/;
+32:    location /image/ {
+33:      root   /;
+38:    # location /antsmarket {
+46:    #   proxy_pass http://market.nlxq.net/trafficweb/;
+50:    # location /trafficweb/static/ {
+58:    #   proxy_pass http://market.nlxq.net;
+62:    location = /favicon.ico {
+68:    # location /trafficapi/ {
+76:    #   proxy_pass http://47.97.47.23/;
+80:    location ~ ^/api/web/.* {
+88:      proxy_pass http://threeantsonline.nlxq.net;
+---- /usr/local/nginx/conf/servers/www.nlxq.net.conf (mtime 2021-12-07 17:55:36.571943136 +0800):
+2:    listen 80;
+3:    server_name www.nlxq.net;
+4:    location / {
+5:        root  /usr/local/unicard/www/;
+===== [TB2] docker 容器（逐个列出）=====
+mysqld_exporter_NLXQ | prom/mysqld-exporter:latest | Exited (2) 5 months ago | 
+node-exporter_NLXQ | prom/node-exporter:v1.3.0 | Exited (2) 5 months ago | 
+cadvisor_NLXQ | google/cadvisor:latest | Exited (0) 5 months ago | 
+===== [TB3] 同机 java 服务的 systemd 单元 =====
+NetworkManager-dispatcher.service             disabled
+ryd-notice-test.service                       disabled
+ryd-notice.service                            disabled
+ryd-smartchat.service                         disabled
+ryd-unicard-official.service                  enabled 
+ryd-unicard-schedule.service                  disabled
+ryd-unicard-sp.service                        disabled
+ryd-unicard-tool.service                      disabled
+systemd-nspawn@.service                       disabled
+systemd-suspend.service                       static  
+unicard-official.service                      enabled 
+unicard-schedule.service                      enabled 
+unicard-sp.service                            disabled
+suspend.target                                static  
+unit_exists=ryd-unicard-official
+unit_exists=ryd-unicard-schedule
+===== [TB4] /usr/local/unicard 与 ryd-smartchat 目录形态 =====
+/usr/local/unicard/:
+total 28
+drwxr-xr-x   7 root root 4096 Mar 20  2026 .
+drwxr-xr-x. 27 root root 4096 Jul 24  2023 ..
+drwxr-xr-x   5 root root 4096 Sep  8 22:47 bin
+drwxr-xr-x   2 root root 4096 Mar 22  2026 etc
+drwxr-xr-x   2 root root 4096 Jul 23  2021 sbin
+drwxr-xr-x   6 root root 4096 Sep 14  2023 var
+drwxr-xr-x   3 root root 4096 May 10  2023 www
+
+/usr/local/unicard/bin/:
+total 828400
+drwxr-xr-x 5 root root      4096 Sep  8 22:47 .
+drwxr-xr-x 7 root root      4096 Mar 20  2026 ..
+-rw-r--r-- 1 root root  70361605 Aug 19  2023 api-official-1.0.0_20230819.jar
+-rw-r--r-- 1  501 games 70383582 Jan  1  2026 api-official-1.0.0.jar
+-rw-r--r-- 1 root root  70381331 Nov 22  2025 api-official-1.0.0.jar.bak_2025-12-23_152106
+-rw-r--r-- 1  501 games 70383581 Dec 23  2025 api-official-1.0.0.jar.bak_2026-01-01_152822
+-rw-r--r-- 1 root root  70348903 Sep  8  2021 api-sp-1.0.0_20210908.jar
+-rw-r--r-- 1  501 games 70382185 Jan  1  2026 api-sp-1.0.0.jar
+-rw-r--r-- 1 root root  70379986 Nov 22  2025 api-sp-1.0.0.jar.bak_2025-12-23_152427
+-rw-r--r-- 1  501 games 70382187 Dec 23  2025 api-sp-1.0.0.jar.bak_2026-01-01_153053
+drwxrwxrwx 3 root root      4096 Sep  8 22:40 dist
+-rw-r--r-- 1 root root    511998 Sep  7  2021 dist_20220901.zip
+-rw-r--r-- 1 root root    511576 Aug 16  2023 dist_20230816.zip
+drwxr-xr-x 4 root root      4096 Sep  8 22:47 dist.bak
+-rw-r--r-- 1 root root    511576 Aug 16  2023 dist.zip
+drwxr-xr-x 3 root root      4096 Sep 25  2021 html
+-rw-r--r-- 1 root root  70901739 Mar  8  2023 schedule-1.0.0_20230308.jar
+-rw-r--r-- 1 nlxq nlxq  70916981 Apr 28  2025 schedule-1.0.0_20250428.jar
+===== [TB5] 根分区 94% 占用大户（只读 du，限时）=====
+17G	/
+12G	/usr
+3.2G	/var
+1.0G	/root
+628M	/home
+184M	/boot
+40M	/etc
+29M	/tmp
+16K	/opt
+16K	/lost+found
+4.0K	/srv
+4.0K	/mnt
+===== RECON-TB DONE =====

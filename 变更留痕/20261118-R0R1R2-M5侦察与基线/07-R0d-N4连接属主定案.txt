@@ -1,0 +1,6 @@
+﻿===== [TD1] N4 连接属主进程 =====
+tcp        0      0 172.16.31.176:43432     47.96.163.197:8001      ESTABLISHED 23774/java          
+owner_pid=23774
+  PID USER     ELAPSED COMMAND
+23774 root     1100243 /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=7003 -Dfinance-refund.enabled=true -Dutc.agent-flow-coefficient=50 -Dutc.agent-flow-recharge-min=0 /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar
+===== RECON-TD DONE =====

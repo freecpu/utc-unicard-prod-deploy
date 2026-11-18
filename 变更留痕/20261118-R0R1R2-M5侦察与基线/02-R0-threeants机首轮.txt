@@ -1,0 +1,138 @@
+﻿===== [T0] 主机与时刻 =====
+iZbp1ag3i4b42fe3z9xiy4Z
+2026-11-18T10:58:17+0800
+ 10:58:17 up 2062 days, 23:55,  1 user,  load average: 0.00, 0.05, 0.06
+===== [T1] java 进程与容器 =====
+ 1152 root     27718034 /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=9002 /usr/local/unicard/bin/api-sp-1.0.0.jar
+ 3237 root     104330951 /usr/bin/java -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=5001 -jar /usr/local/ryd-smartchat/bin/notice-0.0.1-SNAPSHOT.jar
+ 6278 root     110119224 /usr/bin/java -Xmx256m -Xms256m -Dspring.profiles.active=test -Dserver.port=6001 -jar /usr/local/ryd-notice-test/bin/notice-0.0.1-SNAPSHOT.jar
+ 9585 root     20784892 /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=9001 /usr/local/unicard/bin/schedule-1.0.0.jar
+23182 root     4399513 /usr/bin/java -jar -Xmx512m -Xms512m -Dspring.profiles.active=prod -Dserver.port=9003 /usr/local/unicard/bin/api-official-1.0.0.jar
+23774 root     1099984 /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=7003 -Dfinance-refund.enabled=true -Dutc.agent-flow-coefficient=50 -Dutc.agent-flow-recharge-min=0 /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar
+26958 root     146397845 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+===== [T2] R1 锚：现役 threeants jar =====
+bd24267bcf629b528fe6bc4bedaa2cc57faccd031b9e2a820769e8c194732b05  /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar
+93135977 bytes mtime=2026-10-28 00:58:20.138285865 +0800 owner=root:root
+===== [T3] unit 指纹＋脱敏内容（Environment 掩码）=====
+4a928353dcb3aa78dd209d8ee11786f1e525a6ab6b0a10503e030eefb20767cc  /etc/systemd/system/ryd-unicard-official.service
+1385 bytes mtime=2026-11-05 17:25:11.856948167 +0800
+#http://www.jinbuguo.com/systemd/systemd.unit.html#
+#http://www.jinbuguo.com/systemd/systemd.service.html#
+#http://www.jinbuguo.com/systemd/systemd.unit.html#
+#http://www.jinbuguo.com/systemd/systemd.service.html#
+
+[Unit]
+Description=Java Application Service(7003)
+#如果程序依赖其他服务，则需要在他们启动后再启动,否则启动失败
+Requires=redis.service
+After=network.target redis.service
+
+[Service]
+WorkingDirectory=/usr/local/ryd-unicard/
+Environment=OPENAPI_TOKEN=REDACTED
+# ExecStart=/bin/sh -c "exec /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=7003 --finance-refund.enabled=true /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar > /usr/local/ryd-unicard/var/official.log 2>&1"
+ExecStart=/bin/sh -c "exec /usr/bin/java -jar -Xmx256m -Xms256m -Dspring.profiles.active=prod -Dserver.port=7003 -Dfinance-refund.enabled=true -Dutc.agent-flow-coefficient=50 -Dutc.agent-flow-recharge-min=0 /usr/local/ryd-unicard/bin/unicard-official-1.0.0.jar > /usr/local/ryd-unicard/var/official.log 2>&1"
+User=root
+Type=simple
+Restart=always
+#默认情况下，一个单元在10秒内最多允许启动5次,可设置无限制启动
+#StartLimitIntervalSec=0 
+#资源限制，优先/etc/systemd/system.conf
+LimitNOFILE=65530
+LimitNPROC=65530
+
+[Install]
+WantedBy=multi-user.target
+===== [T4] 运行态交叉（netstat＋curl 双路）=====
+Type=simple
+Restart=always
+MainPID=23774
+ExecMainStartTimestamp=Thu 2026-11-05 17:25:13 CST
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:7003            0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN     
+curl_7003_http=800 bytes=23
+===== [T5] official.log 现状（G3 留档前置事实）=====
+782910729 bytes mtime=2026-11-18 10:58:19.387022998 +0800
+total 2974932
+drwxr-xr-x 6 root root       4096 Sep 28 12:48 .
+drwxr-xr-x 6 root root       4096 Oct 19  2023 ..
+drwxr-xr-x 2 root root      20480 Aug  7 16:25 data
+drwxr-xr-x 4 root root       4096 Mar  5  2023 log
+-rw-r--r-- 1 root root  782910729 Nov 18 10:58 official.log
+-rw-r--r-- 1 root root 5325454890 Sep 28 12:48 official.log.bak
+-rw-r--r-- 1 root root         76 Aug 16 20:52 ryd-sp.log
+-rw-r--r-- 1 root root         78 Jun 18 11:13 schedule.log
+drwxrwxrwx 2 root root       4096 Feb  9  2024 tmp
+===== [T6] nginx 进程与配置路径 =====
+ 8515 nginx: worker process
+26171 nginx: master process /usr/local/nginx/sbin/nginx
+-- /usr/local/nginx/sbin/nginx -V:
+nginx version: nginx/1.7.4
+built by gcc 4.8.5 20150623 (Red Hat 4.8.5-44) (GCC) 
+-- /usr/local/nginx/sbin/nginx -t:
+nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful
+===== [T7] nginx server_name/root/listen 抽取 =====
+-- /usr/local/nginx/conf/nginx.conf (mtime 2023-10-23 20:27:33.763179155 +0800):
+17:    include       mime.types;
+44:    #    listen       80;
+45:    #    server_name  localhost;
+52:    #        root   html;
+62:    #        root   html;
+65:        # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+71:        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+74:        #    root           html;
+78:        #    include        fastcgi_params;
+93:    #    listen       8000;
+94:    #    listen       somename:8080;
+95:    #    server_name  somename  alias  another.alias;
+98:    #        root   html;
+107:    #    listen       443 ssl;
+108:    #    server_name  localhost;
+120:    #        root   html;
+125:    include /usr/local/nginx/conf/servers/*.conf;
+===== [T8] web 目录候选与 dist 锚 =====
+-- /usr/local/nginx/html:
+total 16
+drwxr-xr-x  2 root root 4096 Mar 17  2021 .
+drwxr-xr-x 12 root root 4096 Mar 21  2021 ..
+-rw-r--r--  1 root root  537 Mar 17  2021 50x.html
+-rw-r--r--  1 root root  612 Mar 17  2021 index.html
+-- /usr/local/ryd-unicard:
+total 136
+drwxr-xr-x   6 root root   4096 Oct 19  2023 .
+drwxr-xr-x. 27 root root   4096 Jul 24  2023 ..
+drwxr-xr-x   7 root root   4096 Nov  4 14:18 bin
+drwxr-xr-x   2 root root   4096 Nov 28  2023 etc
+-rw-r--r--   1 root root 111954 Oct 19  2023 null192119028208$fc2d61fa37164e53a72890b35db5901c.jpg
+drwxr-xr-x   2 root root   4096 Mar  4  2023 sbin
+drwxr-xr-x   6 root root   4096 Sep 28 12:48 var
+===== [T9] agent-mp / admin-web 本机痕迹 =====
+/data/mysql/unicard/t_agent_20201110.ibd
+/data/mysql/unicard/t_agent_coupon.ibd
+/data/mysql/unicard/kf_agent.ibd
+/data/mysql/unicard/re_agent_iccid.ibd
+/data/mysql/unicard/t_agent.ibd
+/data/mysql/unicard/t_agent_transfer_info_copy.ibd
+/data/mysql/unicard/re_agent_iccid_copy.ibd
+/data/mysql/unicard/t_agent_transfer_info.ibd
+/data/mysql/unicard/t_agent_profit.ibd
+/data/mysql/ryd_unicard/t_agent_withdraw_report_detail.ibd
+/data/mysql/ryd_unicard/t_agent_profit_report_detail.ibd
+/data/mysql/ryd_unicard/t_agent_withdraw_apply.ibd
+/data/mysql/ryd_unicard/t_agent_withdraw_task.ibd
+/data/mysql/ryd_unicard/t_agent_withdraw_report.ibd
+/data/mysql/ryd_unicard/t_agent.ibd
+/data/mysql/ryd_unicard/t_agent_pre_transfer.ibd
+/data/mysql/ryd_unicard/t_agent_profit.ibd
+/data/mysql/ryd_unicard/t_agent_transfer_info.ibd
+/data/mysql/ryd_unicard/re_agent_iccid.ibd
+/data/mysql/ryd_unicard/re_agent_pre_iccid.ibd
+(find 结束)
+===== [T10] 磁盘 =====
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vdb1       100G  7.8G   93G   8% /data
+/dev/vda1        20G   18G  1.3G  94% /
+/dev/vda1        20G   18G  1.3G  94% /
+===== RECON-T DONE =====

@@ -1,6 +1,10 @@
 # SOP-00 构建规范 — 产物怎么来、命名与指纹怎么记
 
 > 适用范围：`ryd-utc-admin.jar`（生产 UTC）与 `unicard-official-1.0.0.jar`（生产 threeants）。
+> ★ 2026-11-18 扩展（REQ-20261113-01 批次计划核可）：三份静态 dist（admin-web Vite／official-web umi／agent-mp 待确认）
+> 与 agent-mp jar（挂起，SOP-05）纳入本仓覆盖。**dist 判据与 jar 分列**：
+> dist 是普通文件集，无 ZIP 条目时间戳抖动问题，**字节级 sha256 直比即有判别力**（逐文件登记，见台账 §16）；
+> §3.1「整包哈希无判别力」条款仅适用 jar，不得反推到 dist；同源构建复现性仍须双跑验证。
 > 本 SOP 只管**产物侧**的纪律，不管业务代码怎么写。
 
 ---

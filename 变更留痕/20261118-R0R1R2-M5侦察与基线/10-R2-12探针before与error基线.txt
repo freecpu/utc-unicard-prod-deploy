@@ -1,0 +1,130 @@
+﻿---- 结果（before-REQ20261113）----
+# utc-http-probe
+# label=before-REQ20261113
+# base=http://127.0.0.1:8001/manage
+# jq=1
+# cols: id  http  bytes  sha256  sha_norm  code  message  datalen  shape
+H01	200	52	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	0	OK	arr:0	code|data|message|success
+H02	200	72	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	-1	请求参数非法	null	code|data|message|success
+H03	200	84	741e0fd5b665e89ffc6c1afa9a57b84dcb4e16aa3d77db7978bd5bc8ed7ba83c	741e0fd5b665e89ffc6c1afa9a57b84dcb4e16aa3d77db7978bd5bc8ed7ba83c	-1	请求体或字段类型非法	null	code|data|message|success
+H04	200	52	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	0	OK	arr:0	code|data|message|success
+H05	200	72	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	-1	请求参数非法	null	code|data|message|success
+H06	200	84	5493c3c00d42f9100a94fc5f2b5142e9c0b4e57bc5ac6e4af1fdda6b5bebed02	5493c3c00d42f9100a94fc5f2b5142e9c0b4e57bc5ac6e4af1fdda6b5bebed02	0	OK	obj:2	code|data|data.content|data.totalElements|message|success
+H07	200	72	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	-1	请求参数非法	null	code|data|message|success
+H08	200	72	3273d2759348e5c633ccfdd920c8a098332090ba151fee55f8cf9a6d2c0640f0	3273d2759348e5c633ccfdd920c8a098332090ba151fee55f8cf9a6d2c0640f0	-1	准入校验失败	null	code|data|message|success
+H09	200	52	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	0	OK	arr:0	code|data|message|success
+H10	404	133	08f1c51b84959f7c7bd9160fb77d16be5b9220c3047bceac6a436d8232e4ec88	38bed4e550a935a416c32b246938b0f8dadbc5a76154962aa87828b8b3c51575	-		-	error|message|path|status|timestamp
+H11	401	77	8c117322209a142a19a208108879410f8c4702a369f8614c2fdf4f3576859ac5	8c117322209a142a19a208108879410f8c4702a369f8614c2fdf4f3576859ac5	1401	Can't Find Jwt Token!	null	code|data|message|success
+H12	500	133	f02c4d008949fdca4f79ebb3beffdbfc8939b9599eed46bbdd0e169a93d75f95	36900dc836d0e6cf1d270670d987f629ecc4473f56758cefffca0a0c3262e5f5	-		-	error|message|path|status|timestamp
+---- 已写入 /tmp/utc-http-before-REQ20261113.txt ----
+OK: 12 条探针全部返回
+OK: 归一化生效条数=2（这些条目的原文 sha 每次必变，只能按 sha_norm 对照）: H10,H12,
+---- 已写入 /tmp/utc-noiserate-2026-11-18.txt ----
+# error-noise-rate date=2026-11-18
+# log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_error.2026-11-18_0.log
+# log_bytes=1648843
+# ts=2026-11-18T11:03:30+08:00
+---- 事件总数（带时间戳的行）----
+2552
+---- 按小时分布 ----
+     16 2026-11-18 00
+   2290 2026-11-18 01
+     18 2026-11-18 02
+     22 2026-11-18 03
+     18 2026-11-18 04
+     37 2026-11-18 05
+     25 2026-11-18 06
+     25 2026-11-18 07
+     10 2026-11-18 08
+     30 2026-11-18 09
+     39 2026-11-18 10
+     22 2026-11-18 11
+---- 按小时 × 异常类名 ----
+     16 2026-11-18 00:00  NO_TYPE
+   2290 2026-11-18 01:00  NO_TYPE
+     18 2026-11-18 02:00  NO_TYPE
+     22 2026-11-18 03:00  NO_TYPE
+     18 2026-11-18 04:00  NO_TYPE
+     37 2026-11-18 05:00  NO_TYPE
+     25 2026-11-18 06:00  NO_TYPE
+     25 2026-11-18 07:00  NO_TYPE
+     10 2026-11-18 08:00  NO_TYPE
+     30 2026-11-18 09:00  NO_TYPE
+     14 2026-11-18 10:00  com.ryd.web.advice.RydException
+     25 2026-11-18 10:00  NO_TYPE
+      1 2026-11-18 11:00  com.ryd.web.advice.RydException
+     21 2026-11-18 11:00  NO_TYPE
+---- logger 类名分布（全天）----
+   2394 com.ryd.components.iot.support.unicome.CellSafetyClient
+    134 com.ryd.utc.unicome.mq.CardFlowQueryConsumer
+     15 com.ryd.web.advice.RydExceptionAdvices
+      4 org.springframework.amqp.rabbit.connection.CachingConnectionFactory
+      4 com.ryd.utc.unicome.mq.CardStatusUpdateConsumer
+      1 io.undertow.request
+---- logger 类名分布（换包后，仅当传入第2参时）----
+(未传第2参 HH:MM:SS，跳过)
+---- 各异常类名全天计数与首末时刻 ----
+com.ryd.web.advice.RydException                      count=15     first=10:32:05 last=11:03:30
+# utc-http-probe
+# label=before-REQ20261113
+# base=http://127.0.0.1:8001/manage
+# jq=1
+# cols: id  http  bytes  sha256  sha_norm  code  message  datalen  shape
+H01	200	52	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	0	OK	arr:0	code|data|message|success
+H02	200	72	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	-1	请求参数非法	null	code|data|message|success
+H03	200	84	741e0fd5b665e89ffc6c1afa9a57b84dcb4e16aa3d77db7978bd5bc8ed7ba83c	741e0fd5b665e89ffc6c1afa9a57b84dcb4e16aa3d77db7978bd5bc8ed7ba83c	-1	请求体或字段类型非法	null	code|data|message|success
+H04	200	52	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	0	OK	arr:0	code|data|message|success
+H05	200	72	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	-1	请求参数非法	null	code|data|message|success
+H06	200	84	5493c3c00d42f9100a94fc5f2b5142e9c0b4e57bc5ac6e4af1fdda6b5bebed02	5493c3c00d42f9100a94fc5f2b5142e9c0b4e57bc5ac6e4af1fdda6b5bebed02	0	OK	obj:2	code|data|data.content|data.totalElements|message|success
+H07	200	72	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	0aba132dedbeb5ed4d18b649764be73205f70eabc81fa1c46ce34b3a2d98c1c2	-1	请求参数非法	null	code|data|message|success
+H08	200	72	3273d2759348e5c633ccfdd920c8a098332090ba151fee55f8cf9a6d2c0640f0	3273d2759348e5c633ccfdd920c8a098332090ba151fee55f8cf9a6d2c0640f0	-1	准入校验失败	null	code|data|message|success
+H09	200	52	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	7c4509c439b1d29a5dcf6da6c4e0810748de32a2756c2701043289a2faee3c7c	0	OK	arr:0	code|data|message|success
+H10	404	133	08f1c51b84959f7c7bd9160fb77d16be5b9220c3047bceac6a436d8232e4ec88	38bed4e550a935a416c32b246938b0f8dadbc5a76154962aa87828b8b3c51575	-		-	error|message|path|status|timestamp
+H11	401	77	8c117322209a142a19a208108879410f8c4702a369f8614c2fdf4f3576859ac5	8c117322209a142a19a208108879410f8c4702a369f8614c2fdf4f3576859ac5	1401	Can't Find Jwt Token!	null	code|data|message|success
+H12	500	133	f02c4d008949fdca4f79ebb3beffdbfc8939b9599eed46bbdd0e169a93d75f95	36900dc836d0e6cf1d270670d987f629ecc4473f56758cefffca0a0c3262e5f5	-		-	error|message|path|status|timestamp
+=====NOISERATE=====
+# error-noise-rate date=2026-11-18
+# log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_error.2026-11-18_0.log
+# log_bytes=1648843
+# ts=2026-11-18T11:03:30+08:00
+---- 事件总数（带时间戳的行）----
+2552
+---- 按小时分布 ----
+     16 2026-11-18 00
+   2290 2026-11-18 01
+     18 2026-11-18 02
+     22 2026-11-18 03
+     18 2026-11-18 04
+     37 2026-11-18 05
+     25 2026-11-18 06
+     25 2026-11-18 07
+     10 2026-11-18 08
+     30 2026-11-18 09
+     39 2026-11-18 10
+     22 2026-11-18 11
+---- 按小时 × 异常类名 ----
+     16 2026-11-18 00:00  NO_TYPE
+   2290 2026-11-18 01:00  NO_TYPE
+     18 2026-11-18 02:00  NO_TYPE
+     22 2026-11-18 03:00  NO_TYPE
+     18 2026-11-18 04:00  NO_TYPE
+     37 2026-11-18 05:00  NO_TYPE
+     25 2026-11-18 06:00  NO_TYPE
+     25 2026-11-18 07:00  NO_TYPE
+     10 2026-11-18 08:00  NO_TYPE
+     30 2026-11-18 09:00  NO_TYPE
+     14 2026-11-18 10:00  com.ryd.web.advice.RydException
+     25 2026-11-18 10:00  NO_TYPE
+      1 2026-11-18 11:00  com.ryd.web.advice.RydException
+     21 2026-11-18 11:00  NO_TYPE
+---- logger 类名分布（全天）----
+   2394 com.ryd.components.iot.support.unicome.CellSafetyClient
+    134 com.ryd.utc.unicome.mq.CardFlowQueryConsumer
+     15 com.ryd.web.advice.RydExceptionAdvices
+      4 org.springframework.amqp.rabbit.connection.CachingConnectionFactory
+      4 com.ryd.utc.unicome.mq.CardStatusUpdateConsumer
+      1 io.undertow.request
+---- logger 类名分布（换包后，仅当传入第2参时）----
+(未传第2参 HH:MM:SS，跳过)
+---- 各异常类名全天计数与首末时刻 ----
+com.ryd.web.advice.RydException                      count=15     first=10:32:05 last=11:03:30
