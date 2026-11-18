@@ -18,11 +18,11 @@
 | 0-2 | unit sha256（脱敏读） | = `4a928353dcb3aa78dd209d8ee11786f1e525a6ab6b0a10503e030eefb20767cc`（台账 §5，方案 A 后现役值） |
 | 0-3 | `/data` 余量 | `df -h /data` ≥ 2G（留档 ≈750MB＋jar 备份 93MB＋余量；R1 实测余 93G） |
 | 0-4 | 根分区余量 | `df -h /` ≥ 300MB（新包 staging 93MB 落 bin/ 同目录所需；R1 实测 94% 满仅 1.3G，**逼近红线时先停下向用户报告**） |
-| 0-5 | 新包（S3 交付 jar） | 本地 sha256 已登记交付件；**class 级 sha256 与测试通过包判同源**（整包哈希无判别力，口径同 SOP-01） |
+| 0-5 | 新包（S3 交付 jar） | 本地 sha256 已登记交付件；**class 级 sha256 与测试通过包判同源**（整包哈希无判别力，口径同 SOP-01）。★ 2026-11-18 已核验（台账 §21）：交付件＝测试部署仓 origin/main 提取，整包 sha=`68b12477…5063a6a`（93,136,188 B）与测试机在役 jar **逐字节同锚**（强于 class 级判据）；staging＝Hub var/tmp/s0-artifacts/threeants/bin/ |
 | 0-6 | before 基线 | `probe-threeants-http.sh` before 已跑并归档（批次 R2/W6）；error 基线已在 |
 | 0-7 | 回滚工具在机 | `/tmp/apply-agentflow-fix.sh` 存在（SOP-02 §7 第 4 条保留件；若已被清理须先重新 scp `scripts/apply-agentflow-fix.sh`） |
 | 0-8 | 同机无关服务清单 | 复核 5 个严禁误伤的服务仍在（见 §8），确认本次只 restart `ryd-unicard-official` |
-| 0-9 | ★新包 `${ENV:}` 空默认键清单 | 列出新包引入的全部空默认占位键，逐键确认注入点已在（现役已知仅 `OPENAPI_TOKEN`，unit Environment 已承载；新增键漏注入＝启动看似成功、定时任务每周期抛准入失败，fail-closed 判例口径） |
+| 0-9 | ★新包 `${ENV:}` 空默认键清单 | 列出新包引入的全部空默认占位键，逐键确认注入点已在（现役已知仅 `OPENAPI_TOKEN`，unit Environment 已承载；新增键漏注入＝启动看似成功、定时任务每周期抛准入失败，fail-closed 判例口径）。★ 2026-11-18 已核验（台账 §21）：新 jar prod/base yml 占位键仅 `${OPENAPI_TOKEN:}` 无新增；新 jar 内 application-prod.yml 与生产现役 jar 内同文件机上哈希逐字相同（969c00c6…，内容不出机）；unit 两个 agent-flow -D 在位 |
 
 > ⚠ unit 含明文 `OPENAPI_TOKEN`：只允许 `sudo sed 's/\(TOKEN=\).*/\1REDACTED/'` 脱敏后输出；
 > 禁止整文件 cat、禁止 scp 回本仓、禁止入 git（SOP-02 §8 第 11/12 条）。

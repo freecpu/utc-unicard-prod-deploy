@@ -28,6 +28,8 @@
 1. index.html 与两件 assets sha 对 A0 逐字（不等＝漂移，停手查清）。
 2. 新 dist（S2 交付件）：本地构建产物为 **Vite 形态**（assets/index.<hash>.js），sha256 清单已登记；
    **严禁 dev 构建产物上生产**（前端部署规范 §二红线）。
+   ★ 2026-11-18 已核验（台账 §21）：交付件＝测试部署仓 origin/main `web/dist/utc-admin/` 提取 65 文件，与测试机在役逐文件 ZERO_DIFF；
+   index=`5daccd9d…a03cd6`（685 B）引 assets/index.05463381.js；staging＝Hub var/tmp/s0-artifacts/web/dist/utc-admin/。
 3. G1（utc-admin jar）已通过且 12 探针 after 全绿——前端新字典依赖后端 statusDesc 键。
 
 ### A2. 备份（★ 回滚唯一来源）
@@ -104,6 +106,10 @@ sha 回到 A0 值（逐字）；失败现场 `dist.failed-G2` 保留供归因。
 1. **★G4 硬前置**：G3 已通过，且 `probe-statusdesc.sh` 实证 7003 返回**非空 statusDesc**、经主管核验。未实证严禁启 G4。
 2. index.html 与 umi 两件 sha 对 B0 逐字。
 3. 新 dist（S4 交付件）为 **umi 形态**（umi.<hash>.js），生产构建（严禁 dev 产物），sha 清单已登记。
+   ★ 2026-11-18 定源更正（台账 §21）：git 登记件 css 与测试机在役脱节（同字节数不同内容）且多一件历史 js，
+   **G4 交付件＝测试机在役 dist 原字节 tar 拉回件**（5 文件 ZERO_DIFF 复核；staging＝Hub var/tmp/s0-artifacts/machine-threeants/），
+   锚：index=`31670ccf…70ce90`（483 B）／umi.dc9bce91.js=`6c19b635…2fdb7b`（1,597,309 B）／umi.b7afafd6.css=`01cc3e93…9734b2`（与 B0 现役 css 同锚＝样式零变更）／static 两件；
+   严禁改用 git 登记件（未经运行期验收）；git 登记脱节修复另案。
 4. `df -h /` 复核 ≥ 100MB（staging ≈2MB＋余量）。
 
 ### B2. 备份（落 /data）
