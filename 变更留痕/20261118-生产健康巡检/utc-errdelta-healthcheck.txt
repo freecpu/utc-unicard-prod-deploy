@@ -1,0 +1,116 @@
+# error-delta label=healthcheck since=2026-11-18 18:19:06
+# log=/data/logs/ryd-utc-admin/ryd-utc-admin/ryd-utc-admin_error.2026-11-18_0.log
+# ts=2026-11-18T21:17:58+08:00
+---- timestamped_lines_per_minute_since ----
+      2 2026-11-18 19:01
+      8 2026-11-18 19:02
+      2 2026-11-18 19:04
+      5 2026-11-18 20:00
+     12 2026-11-18 20:02
+     18 2026-11-18 20:03
+     11 2026-11-18 21:01
+      2 2026-11-18 21:03
+      8 2026-11-18 21:04
+      2 2026-11-18 21:17
+---- slice_total_lines ----
+433
+---- exception_type_counts ----
+     37 com.ryd.components.iot.IoTGatewayException
+     14 com.ryd.core.exception.RydException
+      4 RydException
+      1 org.springframework.web.util.NestedServletException
+      1 com.ryd.web.advice.RydException
+---- exception_type_counts_runtime_regex ----
+     37 com.ryd.components.iot.IoTGatewayException
+     14 com.ryd.core.exception.RydException
+      4 RydException
+      1 org.springframework.web.util.NestedServletException
+      1 Exception
+      1 com.ryd.web.advice.RydException
+---- bare_exception_preceding_char ----
+      1 prev=[ ]
+---- bare_exception_line_count ----
+1
+---- timestamped_line_index ----
+2026-11-18 19:01:46	types=-	probe=-
+2026-11-18 19:01:46	types=-	probe=-
+2026-11-18 19:02:20	types=-	probe=-
+2026-11-18 19:02:20	types=-	probe=-
+2026-11-18 19:02:20	types=-	probe=-
+2026-11-18 19:02:59	types=-	probe=-
+2026-11-18 19:02:59	types=-	probe=-
+2026-11-18 19:02:59	types=-	probe=-
+2026-11-18 19:02:59	types=-	probe=-
+2026-11-18 19:02:59	types=-	probe=-
+2026-11-18 19:04:36	types=-	probe=-
+2026-11-18 19:04:36	types=-	probe=-
+2026-11-18 20:00:10	types=-	probe=-
+2026-11-18 20:00:10	types=-	probe=-
+2026-11-18 20:00:21	types=-	probe=-
+2026-11-18 20:00:21	types=-	probe=-
+2026-11-18 20:00:21	types=-	probe=-
+2026-11-18 20:02:02	types=-	probe=-
+2026-11-18 20:02:02	types=-	probe=-
+2026-11-18 20:02:11	types=-	probe=-
+2026-11-18 20:02:11	types=-	probe=-
+2026-11-18 20:02:18	types=-	probe=-
+2026-11-18 20:02:18	types=-	probe=-
+2026-11-18 20:02:49	types=-	probe=-
+2026-11-18 20:02:49	types=-	probe=-
+2026-11-18 20:02:56	types=-	probe=-
+2026-11-18 20:02:56	types=-	probe=-
+2026-11-18 20:02:56	types=-	probe=-
+2026-11-18 20:02:56	types=-	probe=-
+2026-11-18 20:03:15	types=-	probe=-
+2026-11-18 20:03:15	types=-	probe=-
+2026-11-18 20:03:21	types=-	probe=-
+2026-11-18 20:03:21	types=-	probe=-
+2026-11-18 20:03:25	types=-	probe=-
+2026-11-18 20:03:25	types=-	probe=-
+2026-11-18 20:03:25	types=-	probe=-
+2026-11-18 20:03:25	types=-	probe=-
+2026-11-18 20:03:26	types=-	probe=-
+2026-11-18 20:03:26	types=-	probe=-
+2026-11-18 20:03:26	types=-	probe=-
+2026-11-18 20:03:30	types=-	probe=-
+2026-11-18 20:03:30	types=-	probe=-
+2026-11-18 20:03:30	types=-	probe=-
+2026-11-18 20:03:30	types=-	probe=-
+2026-11-18 20:03:30	types=-	probe=-
+2026-11-18 20:03:50	types=-	probe=-
+2026-11-18 20:03:50	types=-	probe=-
+2026-11-18 21:01:15	types=-	probe=-
+2026-11-18 21:01:15	types=-	probe=-
+2026-11-18 21:01:15	types=-	probe=-
+2026-11-18 21:01:15	types=-	probe=-
+2026-11-18 21:01:15	types=-	probe=-
+2026-11-18 21:01:16	types=-	probe=-
+2026-11-18 21:01:20	types=-	probe=-
+2026-11-18 21:01:20	types=-	probe=-
+2026-11-18 21:01:20	types=-	probe=-
+2026-11-18 21:01:37	types=-	probe=-
+2026-11-18 21:01:37	types=-	probe=-
+2026-11-18 21:03:27	types=-	probe=-
+2026-11-18 21:03:27	types=-	probe=-
+2026-11-18 21:04:11	types=-	probe=-
+2026-11-18 21:04:11	types=-	probe=-
+2026-11-18 21:04:12	types=-	probe=-
+2026-11-18 21:04:12	types=-	probe=-
+2026-11-18 21:04:46	types=-	probe=-
+2026-11-18 21:04:46	types=-	probe=-
+2026-11-18 21:04:46	types=-	probe=-
+2026-11-18 21:04:46	types=-	probe=-
+2026-11-18 21:17:56	types=com.ryd.web.advice.RydException,	probe=-
+2026-11-18 21:17:56	types=-	probe=H12,
+---- first_last_occurrence_per_type ----
+com.ryd.components.iot.IoTGatewayException	count=37	first=com.ryd.components.	last=com.ryd.components.
+com.ryd.core.exception.RydException	count=14	first=com.ryd.core.except	last=Caused by: com.ryd.
+com.ryd.web.advice.RydException	count=1	first=2026-11-18 21:17:56	last=2026-11-18 21:17:56
+org.springframework.web.util.NestedServletException	count=1	first=org.springframework	last=org.springframework
+RydException	count=15	first=2026-11-18 21:17:56	last=Caused by: com.ryd.
+---- probe_attribution_markers ----
+no-such-endpoint=0
+/no/such/path=1
+octet-stream=0
+JwtToken=0
+Not Found=0
