@@ -1,0 +1,5 @@
+# ta-statusdesc-probe ts=2026-11-18T18:17:08+0800
+# iccid_masked=8986****1917 jq=0
+http=200 code=- status=4 statusDesc_present=1 statusDesc=已激活 message=NON_JSON_OR_NO_JQ
+# expect=已激活
+VERDICT=STATUSDESC_OK

@@ -1,0 +1,4 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+6a8b8eb4f5f7876f340c413ff5ae483c61174b3dc655c844b26b3315f0bfeb89  /usr/local/nginx/conf/servers/threeantsonline.nlxq.net.conf

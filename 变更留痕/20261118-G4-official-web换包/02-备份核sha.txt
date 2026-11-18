@@ -1,0 +1,5 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+4e9f978d785f235ab20ce9a5e4f9ac284d242d4a586d68241958035ef94c9c06  /data/log-archive/ryd-unicard/dist.pre-G4-20261118/index.html
+5
