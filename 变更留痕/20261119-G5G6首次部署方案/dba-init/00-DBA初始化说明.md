@@ -11,7 +11,7 @@
 | 0 | `00-createdb.sql` | 建库（utf8mb4_general_ci）＋应用账号＋库级授权模板；**库名/账号名/host/口令四处按实际调整**，DBA 高权账号执行，无需目标库上下文 | IF NOT EXISTS 守卫；口令占位 `__DBA_SET_PASSWORD__` 为 fail-closed，**DBA 必须自行设定/修改强口令** |
 | 1 | `01-schema.sql` | 49 表 DROP+CREATE 结构＋1 存储过程（纯 DDL 无数据） | DROP IF EXISTS 重建（**仅限全新空库首装**） |
 | 2 | `02-basedata.sql` | config 4 表基础数据（t_role/t_menu/t_permission/t_sys_dictionary 清洗件） | DELETE 精确条件＋INSERT，可重复执行 |
-| 3 | `03-seed.sql` | level1 顶层经销商 1 行（AGENTMP-L1-0001/agentmp-level1） | DELETE 固定 id＋INSERT，可重复执行 |
+| 3 | `03-seed.sql` | level1 顶层经销商 1 行（AGENTMP-L1-0001/agentmp-level1），**初始口令哈希已嵌入（用户裁定）** | DELETE 固定 id＋INSERT，可重复执行 |
 
 ## 二、库与账号要求（请 DBA 按此准备）
 
@@ -25,13 +25,13 @@
 ## 三、初始化后交接（DBA→S0）
 
 - 交回：**库名、主机地址:端口、应用账号用户名**（口令走受控通道，不入 git/Hub/明文文书）。
-- seed 登录口令为占位符 `__PASSWORD_SHA256_UPPER_HEX_SET_AT_DEPLOY__`（fail-closed，占位不匹配任何哈希）——**DBA 无需处理**，G5 阶段由 S0 在机上按用户裁定的登录口令 UPDATE 注入（UPPER(SHA2(...,256)) 大写 hex）。
+- seed 登录口令：**用户已裁定初始口令，其 SHA-256 大写 hex 已嵌入 03-seed.sql，DBA 直接执行即可**（原占位符设计废止）；初始为弱口令，**公网开放前由 S0 机上 UPDATE 改强**（模板在 03-seed 文末，UPPER(SHA2(...,256)) 大写 hex）。
 - 自检出口判据（DBA 可代跑）：`SELECT COUNT(*) FROM t_agent WHERE level=0;` 期望 **0**（无 level0）；`SELECT id,username,level,parent_id,enabled FROM t_agent WHERE id='AGENTMP-L1-0001';` 期望 1 行 level=1/parent_id=NULL/enabled=1；表计数期望 **49**。
 
-## 四、与源脚本的差异披露（仅一处，PII 掩码）
+## 四、与源脚本的差异披露（两处：01 PII 掩码＋03 用户裁定口令哈希）
 
 - `01-schema.sql` L1202 存储过程内 `BETWEEN '8986…600' and '8986…700'` 两段**真实卡号形态字面量**→替换为合成占位 `'8986000000000000000'`（全 0 尾段，非真实卡）。该过程为报表 job（agent-mp 可选），掩码不影响结构与登录/主池链路；CRLF 归一 diff 实证**仅此行差异**。
-- 02/03 与源逐字节一致（敏感形态扫描零命中）。
+- 02 与源逐字节一致（敏感形态扫描零命中）；**03-seed 第二处偏离（2026-11-19 用户裁定）**：password 占位符→用户裁定初始口令的 SHA-256 大写 hex（弱口令哈希可彩虹表秒查，公网开放前必改强；明文口令不入任何仓/文书）；新指纹见台账 §24 补记 3。
 - 本包三件初始化 SQL sha256 登记于台账 §24 补记（00-createdb 模板指纹见 §24 补记 2）；DBA 执行前请核对指纹防传输篡改。
 
 ## 五、红线提醒
