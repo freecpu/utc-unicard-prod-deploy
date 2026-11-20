@@ -1,0 +1,2 @@
+2026-11-20 15:01:34.353  INFO 1 --- [           main] c.c.unicard.agentmp.AgentMpApplication   : The following profiles are active: agentmp
+2026-11-20 15:02:12.081  INFO 1 --- [           main] c.c.unicard.agentmp.AgentMpApplication   : Started AgentMpApplication in 40.813 seconds (JVM running for 43.059)
