@@ -23,7 +23,7 @@ utc-unicard-prod-deploy/
 │   ├── SOP-02-threeants-配置注入.md ← -D 注入的逐步操作 + 判据 + 回滚（已执行；§9 换包后必重跑 verify）
 │   ├── SOP-03-threeants-生产换包.md ← threeants jar 换包（G3；留档落 /data＋同分区原子 mv＋严禁动 unit）
 │   ├── SOP-04-静态dist替换.md      ← admin-web Vite（G2）＋official-web umi（G4）；零重启零 reload＋旧资源并留
-│   ├── SOP-05-agent-mp-生产换包-占位.md ← G5/G6 挂起，待用户确认生产存在性与坐标
+│   ├── SOP-05-agent-mp-生产换包-占位.md ← ★占位件已过期：G5/G6 于 2026-11-20 执行完毕（勘误段待补）
 │   └── SOP-06-回滚总纲.md          ← 跨 G 停链/逆序回滚/锚汇总（D3）
 ├── scripts/               ← 全部只读探针与验证脚本（可复跑）
 └── 变更留痕/               ← 每次变更一个目录，内含原始输出与验证记录
@@ -35,6 +35,7 @@ utc-unicard-prod-deploy/
 |---|---|---|---|---|
 | 生产 UTC | `runyd-47-96-163-197` | 47.96.163.197:62211 (user `runyd`) | `ryd-utc-admin.service` | 8001（context-path `/manage`） |
 | 生产 threeants | `runyd-47-111-157-5` | 47.111.157.5:62211 (user `runyd`) | `ryd-unicard-official.service` | 7003 |
+| 生产第四台机 agent-mp | `runyd-223-4-12-235` | 223.4.12.235:22 (user `runyd`) | —（docker compose，非 systemd） | 7013（仅绑回环，对外经 nginx 443） |
 | 测试机 threeants | `47.97.47.23` | 47.97.47.23:22 (user `root`) | `unicard-test-threeants-official.service` | 7003 |
 
 **生产两台都必须走 SSH 别名**（端口 62211、用户 runyd）。直连 IP 的 22 端口会超时。
@@ -44,8 +45,14 @@ utc-unicard-prod-deploy/
 | 站点 | 机 | 入口 | 静态根 | 形态 |
 |---|---|---|---|---|
 | admin-web（S2） | UTC 机 | openresty 8000 utc.nlxq.net（vhost `servers/ryd-utc.conf`） | `/data/html/ryd-utc-admin/dist` | Vite（assets/index.<hash>.js） |
+| utc-sp-web | UTC 机 | openresty 8002 sp.threeants.cn（vhost `sp.threeants.cn.conf`） | `/data/html/ryd-utc-sp-admin/dist` | 未采 · ★**未建档**（后期纳入） |
 | official-web（S4） | threeants 机 | nginx 443 threeantsonline.nlxq.net（vhost `servers/threeantsonline.nlxq.net.conf`） | `/usr/local/ryd-unicard/bin/dist/` | umi；`/api/web/`→127.0.0.1:7003 |
-| agent-mp（S5/S6） | **未证实** | 三台可达机均未见，待用户确认（SOP-05） | — | — |
+| agent-mp（S5/S6 后端＋S6 前端） | 第四台机 | nginx 443 www.xhc123.work（vhost `/etc/nginx/sites-available/agentmp.conf`） | `/data/apps/agent-mp/dist` | umi；`/api/`→127.0.0.1:7013 |
+
+★ 2026-11-23 勘误：上一版此表把 agent-mp 写成「未证实／三台可达机均未见」，**该结论已作废**。
+第四台机已于 2026-11-20 完成后端与前端首次部署、2026-11-21 完成 B 端路由修复，全部验收闭合；
+证据见 `变更留痕/20261119-G5G6首次部署方案/00-部署方案-v1.1-已裁.md` 与 `指纹台账.md` §24/§25。
+原「未证实」的判断依据是 `sop/SOP-05`（v0.3 占位件，2026-11-18 写），该文件此后从未更新 —— 教训见 §3 铁律 4。
 
 ⚠ 两机 vhost 均在 `include servers/*.conf` 子目录，只扫主 conf 会漏。
 ⚠ threeants 机根分区 94% 满（仅 1.3G）：留档/备份一律落 /data；同机另有 5 个 java 服务严禁误伤（SOP-03 §8）。
@@ -54,7 +61,7 @@ utc-unicard-prod-deploy/
 `systemctl show -p KEY --value` 不支持、`NRestarts` 属性不存在、
 `StartLimitIntervalUSec` 叫 `StartLimitInterval`。**脚本一律用 `-p KEY | cut -d= -f2`。**
 
-## 3. 三条铁律
+## 3. 四条铁律
 
 1. **生产默认只读。** 任何写操作（改 unit、换 jar、重启服务、删文件）都必须先取得
    用户对该**具体动作**的显式授权。授权不按机器给，按动作给。
@@ -64,6 +71,13 @@ utc-unicard-prod-deploy/
 3. **0 命中不可当否定结论。** 空结果比错误结果更危险 —— 两边都空会得出「相同」的假阳性。
    本仓所有比对脚本都带空结果 FATAL 守卫；告警类脚本必须带正控 selftest
    （`scripts/audit-tmp-creds.sh` 就是被 selftest 抓出过真缺陷的）。
+4. **执行完必须回写，否则视为未完成。** 每次生产变更验收闭合后，必须在**同一次提交内**完成三件回写：
+   （a）`sop/` 对应规程按实际执行修订；（b）`anchors/<project>.env` 的 CURRENT 移入 ROLLBACK、新值写入 CURRENT；
+   （c）`变更留痕/00-索引.md` 登记本次批次。三者缺一，本次变更状态记 `未完成`，不得声称已上线。
+   > 立此条的由来（2026-11-23）：本仓 `sop/` 记的是「某一次怎么做」，而事实一直在往前跑；
+   > `变更留痕/` 记着真相，却没人从它反哺 `sop/` 与 `anchors/`。结果是 2026-11-18 同日完成 G1~G4 四次换包后，
+   > **SOP-06 §3 的锚表当天即过期**、`anchors/utc-admin.env` 的现役值停留在 11-04、`SOP-05` 的「空白规划机」结论与
+   > 11-20 的实际上线相反。**权威文档过期比没有文档更危险：没有文档会去查，过期文档会被直接采信。**
 
 ## 4. 脚本清单
 
@@ -131,5 +145,7 @@ utc-unicard-prod-deploy/
 
 - ~~生产 threeants 预划拨 fail-closed 等待方案选型与重启授权~~ ✅ 方案 A 已于 2026-11-05 执行
   （台账 §4/§5；代价＝配置漂移，根治仍是方案 B）。**后续任何换包/动 unit 必重跑 verify（SOP-02 §9）**。
-- ★ 当前主线：REQ-20261113-01 M5 生产上线批次（G1~G6 逐次授权；G5/G6 挂起待 agent-mp 确认），
-  批次计划正本在 Hub `需求/归档/REQ-20261113-01/`；侦察与基线证据见 `变更留痕/20261118-R0R1R2-M5侦察与基线/`。
+- ★ 当前主线：REQ-20261113-01 M5 生产上线批次 —— **G1~G7 已全部执行完毕并验收闭合**
+  （G1~G4 于 2026-11-18；G5/G6 于 2026-11-20；G7 于 2026-11-21）。批次计划正本在 Hub
+  `需求/归档/REQ-20261113-01/`；侦察与基线证据见 `变更留痕/20261118-R0R1R2-M5侦察与基线/`；
+  逐次变更的锚与目录对照见 `变更留痕/00-索引.md`。
