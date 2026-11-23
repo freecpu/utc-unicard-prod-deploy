@@ -25,7 +25,8 @@ utc-unicard-prod-deploy/
 │   ├── SOP-04-静态dist替换.md      ← §0 三套前端通用流程与交付件口径；A=admin-web Vite（G2）、B=official-web umi（G4）
 │   ├── SOP-05-agent-mp-生产换包-占位.md ← ★占位件已过期：G5/G6 于 2026-11-20、G7 于 2026-11-21 执行完毕（文首已加状态勘误）
 │   ├── SOP-06-回滚总纲.md          ← 跨 G 停链/逆序回滚/锚汇总（D3）
-│   └── SOP-07-agent-mp-静态dist替换.md ← agent-mp umi dist 换包（S6）＋三路判据＋四条判例
+│   ├── SOP-07-agent-mp-静态dist替换.md ← agent-mp umi dist 换包（S6）＋三路判据＋四条判例
+│   └── SOP-08-xxl-job-admin-换包与回滚.md ← 调度中心换包（G8）＋执行器耦合关系＋无回滚副本阻断
 ├── scripts/               ← 全部只读探针与验证脚本（可复跑）
 └── 变更留痕/               ← 每次变更一个目录，内含原始输出与验证记录
 ```
@@ -34,7 +35,8 @@ utc-unicard-prod-deploy/
 
 | 角色 | SSH 别名 | 主机 | systemd 单元 | 端口 |
 |---|---|---|---|---|
-| 生产 UTC | `runyd-47-96-163-197` | 47.96.163.197:62211 (user `runyd`) | `ryd-utc-admin.service` | 8001（context-path `/manage`） |
+| 生产 UTC — utc-admin | `runyd-47-96-163-197` | 47.96.163.197:62211 (user `runyd`) | `ryd-utc-admin.service` | 8001（context-path `/manage`） |
+| 生产 UTC — xxl-job 调度中心 | 同上（同机） | 同上 | `xxl-job-admin.service`（`Type=forking`，ExecStart=`service.sh start`，`User=root`） | 8082（`*:8082`，context-path `/xxl-job-admin`） |
 | 生产 threeants | `runyd-47-111-157-5` | 47.111.157.5:62211 (user `runyd`) | `ryd-unicard-official.service` | 7003 |
 | 生产第四台机 agent-mp | `runyd-223-4-12-235` | 223.4.12.235:22 (user `runyd`) | —（docker compose，非 systemd） | 7013（仅绑回环，对外经 nginx 443） |
 | 测试机 threeants | `47.97.47.23` | 47.97.47.23:22 (user `root`) | `unicard-test-threeants-official.service` | 7003 |
@@ -88,6 +90,7 @@ utc-unicard-prod-deploy/
 | `probe-threeants-http.sh` | threeants 6 探针 HTTP 基础回归（G3 前后 diff；纯 GET 零写库，sha_norm 同口径） | 只读 |
 | `probe-statusdesc.sh` | 卡详情 statusDesc 实证（G4 硬前置；真实卡号运行时传入，出参仅掩码，完整响应即毁） | 只读 |
 | `probe-utc-runtime.sh` | UTC 运行态取证（jar 指纹、PID、端口、启动时刻） | 只读 |
+| `probe-xxljob-admin.sh` | xxl-job-admin 调度中心只读基线（jar 指纹 / unit 定义 / 端口与 HTTP / 日志轮转 / 控制文件指纹）；**刻意不读 `.env`、`service.sh` 正文** | 只读 |
 | `probe-utc-traffic.sh` | UTC 流量/调用方观测 | 只读 |
 | `compare-utc-http.sh` | 两次 HTTP 探针结果的 diff | 只读 |
 | `analyze-error-delta.sh` | 换包后 error 日志增量归因 | 只读 |
@@ -150,3 +153,6 @@ utc-unicard-prod-deploy/
   （G1~G4 于 2026-11-18；G5/G6 于 2026-11-20；G7 于 2026-11-21）。批次计划正本在 Hub
   `需求/归档/REQ-20261113-01/`；侦察与基线证据见 `变更留痕/20261118-R0R1R2-M5侦察与基线/`；
   逐次变更的锚与目录对照见 `变更留痕/00-索引.md`。
+- ★ **xxl-job-admin 已建档但不可换包**（2026-11-23，`SOP-08` ＋ `anchors/xxl-job-admin.env`）：现行 jar
+  `4c94e30a…`／46,859,824 B，机内**只有这一份、零历史副本** → 锚 `STATUS=BLOCKED`。解阻动作＝SOP-08 §3 建备份，
+  属生产写、须单独授权。另：8082 绑 `*:8082` 且机内 `firewalld` inactive、`iptables` 无 8082 规则 → 暴露面全赖云安全组。
