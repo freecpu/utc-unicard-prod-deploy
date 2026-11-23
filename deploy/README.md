@@ -17,7 +17,11 @@ deploy/<project>-<gx>.sh     项目脚本（阶段 B 起逐个落地；与 SOP �
 变更留痕/<日期>-<GX>-<项目>/  脚本产出的证据目录（由 evi_new 创建）
 ```
 
-已建锚：`utc-admin(G1)` `admin-web(G2)` `threeants(G3)` `official-web(G4)` `agent-mp(G5/G6·BLOCKED)`。
+已建锚（6 份，截至 2026-11-23）：`utc-admin(G1)` `admin-web(G2)` `threeants(G3)` `official-web(G4)` `agent-mp(G5-G7)` `xxl-job-admin(G8·BLOCKED)`。
+
+★ 两处易误读：
+- `agent-mp` 的 `MODE=static-dist-swap` **只覆盖前端 dist**；后端 jar 由 G5 首次部署，尚无独立 SOP，且其 `PROBE=none`。
+- `xxl-job-admin` 的 `BLOCKED` 是「已部署 1373 天但机上无任何回滚副本」，**不是「未部署」** —— 详见 SOP-08。
 
 ## 2. 四个安全机制（回答"每次操作不一样会不会不安全"）
 
@@ -115,7 +119,8 @@ anchor_load utc-admin          # 加载锚（白名单键）
 | G4 official-web | 本地（umi，Node16+cross-env） | 否 |
 | G1 utc-admin | 机上 mvn（jar 108MB，class 可复现、jar 时间戳不可） | **是（例外通道）** |
 | G3 threeants | 同上 | **是（例外通道）** |
-| G5/G6 agent-mp | 未定（STATUS=BLOCKED） | 未定 |
+| G5/G6 agent-mp | 前端本地（umi）；后端已部署但无 SOP | 前端否／后端未定 |
+| G8 xxl-job-admin | **本仓无源码、无 pom → 只能部署不能构建** | 否（交付件须外部定源） |
 
 ## 6. 失败语义（分级退出码）
 
@@ -150,7 +155,7 @@ step "$EX_VERIFY" "判据验证"   -- do_verify
 
 | 阶段 | 范围 | 状态 |
 |---|---|---|
-| A | 锚文件 5 份 ＋ `_lib.sh`（lint/selftest/ro_ssh/wr_guard/evi） | ✅ 2026-11-23 |
+| A | 锚文件 6 份 ＋ `_lib.sh`（lint/selftest/ro_ssh/wr_guard/evi） | ✅ 2026-11-23 |
 | B | G4 official-web 脚本（最安全，先验证骨架） | 待做，需 DP-RO 只读实测 |
 | C | G2 admin-web（同形态，验证"骨架复用、逻辑不共享"边界） | 待做 |
 | D | G1 utc-admin（首个涉及 restart 的项目） | 待做 |
