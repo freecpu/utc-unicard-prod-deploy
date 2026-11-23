@@ -149,7 +149,7 @@ sed '/^[[:space:]]*#/d' pom.properties | LC_ALL=C sort | sha256sum
 |---|---|---|
 | `dist-<7位短commit>/` | 构建产物目录，**目录名带短 commit** | 短 commit 须等于 BUILD-INFO 里 COMMIT 的前 7 位 |
 | `BUILD-INFO` | 见 §6.3 六字段 | 六字段齐全且 `PROFILE=prod` |
-| `SHA256SUMS.txt` | 产物内全部文件的 sha256 + 字节数 | `sha256sum -c` 全 OK；条目数与目录实际文件数一致 |
+| `SHA256SUMS.txt` | 产物内全部文件的 sha256 清单 | 必须是 `sha256sum` **原生格式**（每行 `<64位hex><两空格><相对路径>`）；`sha256sum -c` 全 OK；条目数与目录实际文件数一致。**字节数不得与 hash 写在同一列**（会令 `-c` 报格式错），另列在 BUILD-INFO 或清单注释行 |
 
 ### 6.3 BUILD-INFO 必备六字段
 

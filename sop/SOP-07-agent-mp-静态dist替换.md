@@ -89,7 +89,7 @@
 ## 2. 前置（只读，逐条通过才允许进入 §3）
 
 1. 现役五件 sha256 对 §0.1 **逐字**；不等＝漂移，停手查清后再动。
-2. 禁动件三件对 §0.0 表格：`agentmp.conf` sha == `2e8fbc15…`（2830 B）；MP_verify 两枚存在且 `len=16`。
+2. 禁动件三件对 §0 表格：`agentmp.conf` sha == `2e8fbc15…`（2830 B）；MP_verify 两枚存在且 `len=16`。
 3. 磁盘：`df -h /data` 余量 ≥ 交付件体积 ×3（staging＋备份＋余量）。
 4. 后端健康：`curl -s http://127.0.0.1:7013/api/web/health` → `200` `OK`。
    后端不健康时**先查后端**，不得用前端替换去掩盖。
@@ -107,6 +107,10 @@
 | `dist-<7位短commit>/` | 目录名短 commit == BUILD-INFO 的 `COMMIT` 前 7 位 |
 | `BUILD-INFO` | 六字段齐全，且 **`PROFILE=prod`**（dev/test 一律拒收） |
 | `SHA256SUMS.txt` | `sha256sum -c` 全 OK；条目数 == staging 实际文件数 |
+
+> ★ 清单必须是 `sha256sum` **原生格式**（每行 `<64位hex><两空格><相对路径>`）。
+> 带字节数列的清单会让 `sha256sum -c` 直接报格式错 —— 字节数另列在 BUILD-INFO 或清单注释行，
+> **不得与 hash 写在同一列**（`SOP-00 §6.2` 已按此修正）。
 
 **形态校验（本机专属）**：必须是 umi 形态 —— `index.html` ＋ 根级 `umi.<hash>.js` ＋ `umi.<hash>.css` ＋ `static/`。
 出现 `assets/index.<hash>.js` 说明拿错了另一个项目的产物，立即停。
