@@ -91,6 +91,25 @@ utc-unicard-prod-deploy/
 | `diag-cred-shape.sh` | 掩码查看凭据命中上下文（用于人工复核误报） | 只读 |
 | `watch-cline.sh` | C 线事件观察（退卡/周期更新） | 只读 |
 
+## 5A. 锚文件与部署脚本（anchors/ ＋ deploy/）
+
+2026-11-23 新增。定位＝**SOP 的机读副本**，不是新规程、不替代 SOP：
+`sop/` 仍是人读的权威步骤，`anchors/` 是其中"锚值／坐标／禁动件／判据"的事实源，
+`deploy/` 只放基础设施与（阶段 B 起）逐项目脚本。详见 `deploy/README.md`。
+
+| 路径 | 作用 |
+|---|---|
+| `anchors/<project>.env` | 每项目一份：CURRENT（现役）／ROLLBACK（回滚目标）／IMMUTABLE（禁动件）／服务面／判据／GAP |
+| `deploy/_lib.sh` | 唯一共享件：锚解析、lint、selftest、只读 ssh、写授权闸门、证据目录；**不含项目业务步骤** |
+| `deploy/<project>-<gx>.sh` | 逐项目脚本（待建；与 SOP 章节一一对应） |
+
+- 校验：`bash deploy/_lib.sh lint all`；自检：`bash deploy/_lib.sh selftest`。
+  无 selftest 的 CLEAN 视为假阴性（同 §5 凭据门禁口径）。
+- ★ **锚分两组**：2026-11-18 四组换包后，SOP-06 §3 登记的只是"回滚锚"，现役值在台账 §22.x。
+  `anchors/*.env` 同持两组；锚值以它为准，且随每次换包在同一次提交内更新。
+- 未采字段写 `?` 并计入 GAP：**不阻断 dry-run，阻断 apply**。
+- 阶段：A（锚＋基础设施）已完成；B 起一项目一批，顺序 G4 → G2 → G1 → G3 → G5/G6（末项阻塞）。
+
 ## 5. 提交纪律
 
 - `git add` 前先 `git status --short` 核对清单，只提交本次任务相关文件。
