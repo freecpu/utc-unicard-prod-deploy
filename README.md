@@ -23,8 +23,9 @@ utc-unicard-prod-deploy/
 │   ├── SOP-02-threeants-配置注入.md ← -D 注入的逐步操作 + 判据 + 回滚（已执行；§9 换包后必重跑 verify）
 │   ├── SOP-03-threeants-生产换包.md ← threeants jar 换包（G3；留档落 /data＋同分区原子 mv＋严禁动 unit）
 │   ├── SOP-04-静态dist替换.md      ← admin-web Vite（G2）＋official-web umi（G4）；零重启零 reload＋旧资源并留
-│   ├── SOP-05-agent-mp-生产换包-占位.md ← ★占位件已过期：G5/G6 于 2026-11-20 执行完毕（勘误段待补）
-│   └── SOP-06-回滚总纲.md          ← 跨 G 停链/逆序回滚/锚汇总（D3）
+│   ├── SOP-05-agent-mp-生产换包-占位.md ← ★占位件已过期：G5/G6 于 2026-11-20、G7 于 2026-11-21 执行完毕（文首已加状态勘误）
+│   ├── SOP-06-回滚总纲.md          ← 跨 G 停链/逆序回滚/锚汇总（D3）
+│   └── SOP-07-agent-mp-静态dist替换.md ← agent-mp umi dist 换包（S6）＋三路判据＋四条判例
 ├── scripts/               ← 全部只读探针与验证脚本（可复跑）
 └── 变更留痕/               ← 每次变更一个目录，内含原始输出与验证记录
 ```
