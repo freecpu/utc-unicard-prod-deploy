@@ -11,6 +11,7 @@
 ## 1. 目录
 
 ```
+anchors/00-worktree归属表.md      一个 worktree = 一个项目 = 一个锚（防按仓名混为一谈）
 anchors/<project>.env        每项目一份：锚 + 坐标 + 禁动件 + 判据 + GAP
 deploy/_lib.sh               基础设施：锚解析/lint/selftest/只读 ssh/写闸门/证据目录
 deploy/<project>-<gx>.sh     项目脚本（阶段 B 起逐个落地；与 SOP 章节号一一对应）
@@ -22,6 +23,8 @@ deploy/<project>-<gx>.sh     项目脚本（阶段 B 起逐个落地；与 SOP �
 ★ 两处易误读：
 - `agent-mp` 的 `MODE=static-dist-swap` **只覆盖前端 dist**；后端 jar 由 G5 首次部署，尚无独立 SOP，且其 `PROBE=none`。
 - `xxl-job-admin` 的 `BLOCKED` 是「已部署 1373 天但机上无任何回滚副本」，**不是「未部署」** —— 详见 SOP-08。
+- ★ **`official-web` 与 `agent-mp` 是同一 git 仓（`unicard-official-nodejs`）的两个 worktree**，不是一个仓的两个名字。
+  归属、推送目标与构建落点见 `anchors/00-worktree归属表.md`。**按仓名下结论会串项目**（2026-11-23 已实际发生一次）。
 
 ## 2. 四个安全机制（回答"每次操作不一样会不会不安全"）
 
