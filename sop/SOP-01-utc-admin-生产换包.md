@@ -11,15 +11,38 @@
 
 ## 0. 前置事实（2026-11-05 实测，动手前须复核是否仍成立）
 
+> ★ **数值事实源＝`anchors/utc-admin.env`**（2026-11-23 起）。本节任何数值与锚冲突时以锚为准。
+> 下表已于 2026-11-23 按 2026-11-18 G1 换包后的实测值回填「现役 sha／MainPID／启动时刻」三项；
+> 其余项（systemd 版本、Type、Restart 策略、java 命令行）换包未触及，仍为 2026-11-05 实测值。
+
 | 项 | 值 |
 |---|---|
 | systemd | **219**（CentOS 7）。`systemctl show -p KEY --value` **不支持**，一律 `-p KEY \| cut -d= -f2-` |
 | `Type` | `forking`，`PIDFile=/data/logs/ryd-utc-admin/ryd-utc-admin.pid` |
 | `Restart` / `StartLimitBurst` | `on-failure` / `3` |
-| 现役 jar sha256 | `ba16cd657e6e645af24f14cc7a6fd34f802cdcbc441dd988cfc9ed055b904262` / 108,561,064 B |
-| 现役 MainPID / 启动时刻 | `2074989` / `Wed 2026-11-04 12:43:14 CST` |
+| 现役 jar sha256 | `f3ddcdb77beabb36ae3b1dc8c98366a235a65465e67843cd54337ee5950a9060` / 108,562,566 B（2026-11-18 G1 换包后，commit `782425d`；旧值 `ba16cd65…` / 108,561,064 B 现为回滚目标） |
+| 现役 MainPID / 启动时刻 | `993803` / `2026-11-18 17:25:58`（`Started UtcAdminApp` 14.227 s；旧值 `2074989` / `Wed 2026-11-04 12:43:14 CST` 为换包前） |
 | 现役 java 命令行 | `/usr/local/java/bin/java -server -Xmx4G -Xms4G -XX:+UseG1GC -XX:MaxGCPauseMillis=90 -Dspring.profiles.active=prod -jar ryd-utc-admin.jar` |
-| 启动耗时 | 约 **14.6 s**（`Started UtcAdminApp in 14.583 seconds`） |
+| 启动耗时 | 约 **14.6 s**（`Started UtcAdminApp in 14.583 seconds`；2026-11-18 实测 14.227 s，同量级） |
+
+### ★ 这个 jar 里同时装着什么（换包的真实影响面；2026-11-23 补）
+
+**`ryd-utc-admin.jar` 内嵌了 xxl-job 执行器**（`utc-job` 模块随 jar 打包）。生产上**没有独立的 `utc-job` 进程**——
+执行器在本进程内注册（`executor ip=127.0.0.1:8083`），调度中心是同机的 `xxl-job-admin`（`http://127.0.0.1:8082/xxl-job-admin`）。
+
+因此**换这个 jar 就等于同时换掉全部定时任务代码**：
+
+| 面 | 含义 |
+|---|---|
+| 影响范围 | `CycleUpdatedHandler`／`FlowPackagePersistHandler`／`FlowUpdatedHandler`／`SmsSyncHandler`／`TerminalFlowUnicomHandler` 等全部 handler 随 jar 一并更新 |
+| 额外判据 | 除 §5 判据外，还须复核**执行器重新注册成功**：日志出现整点 `regist` 序列、执行器在调度中心侧在线；当日执行日志继续产生（台账 §23：单日执行日志 27 件、最新一条 `handleCode=200` 回调成功） |
+| 回滚 | 执行器与业务代码**一并回退，不可分拆**。不存在「只回滚业务、保留新执行器」的路径 |
+| 易漏 | 只验 HTTP 12 条探针看不出来——**定时任务不经 HTTP 触发，是这条链上唯一 HTTP 判据覆盖不到的部分** |
+
+> 与 `SOP-06 §3A.1` 同源：2026-11-18 G1 换包时已记录「utc-admin 进程内内嵌 xxl-job 执行器，因此本次换包同时更换了全部定时任务代码」。
+> 本条把那一句从「回滚总纲的一句话」提升为**换包时的必查项**。
+> 另：调度中心 `xxl-job-admin` **不随本 jar 更新**（它是独立进程、独立 jar，2023-02-18 起未重启），
+> 两者是「客户端与服务端」关系——换客户端不动服务端；服务端自身的换包规程尚未建档（挂账）。
 
 ### ★ 一律不碰的四样东西
 
@@ -224,3 +247,4 @@ sudo systemctl restart ryd-utc-admin
 7. **禁止**在 HH:00–HH:04 窗口重启。
 8. **禁止**内联远程命令：含 `$`、竖线、空格、中文的一律写成脚本 scp 上传执行。
    PowerShell 会本地求值 `$()`、吃掉 awk 的 `$N`、把 `\$f` 展开成 Windows 路径。
+9. **禁止**只凭 HTTP 12 条探针就判换包通过 —— 定时任务不经 HTTP 触发，是这条链上唯一 HTTP 判据覆盖不到的部分（见 §0「这个 jar 里同时装着什么」）。
