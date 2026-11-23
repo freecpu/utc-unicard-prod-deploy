@@ -37,6 +37,60 @@ err()  { printf '[FAIL] %s\n' "$*"; }
 die()  { printf '[FATAL] %s\n' "$*" >&2; exit 2; }
 
 # ---------------------------------------------------------------------------
+# 0) 失败语义：分级退出码 + 失败即停 + 留证 + 不自动回滚
+# ---------------------------------------------------------------------------
+# 每个退出码对应一个「停产点」。失败只停机、保留现场、打印人工回滚指令，
+# 绝不在失败分支里自动执行回滚/清理（那会把可诊断现场毁掉）。
+EX_OK=0         # 正常
+EX_USAGE=2      # 参数/用法错误
+EX_PRE=10       # 前置校验失败（锚漂移、禁动件不符、GAP 未清、前置未满足）
+EX_ARTIFACT=20  # 交付件准入失败（sha/字节/形态/来源不符）
+EX_BACKUP=30    # 备份失败（未备份成功绝不允许替换）
+EX_SWAP=40      # 替换失败（含未捕获错误）
+EX_VERIFY=50    # 判据验证失败（替换已发生，须人工判定是否回滚）
+EX_EVI=60       # 证据落盘失败
+EX_LOCK=70      # 并发锁冲突
+
+EVI_DIR="${EVI_DIR:-}"
+
+# fail <exit_code> <message...> —— 唯一允许的失败出口
+fail() {
+  local c="$1"; shift
+  err "EXIT=$c $*"
+  _evi_log "EXIT=$c $*"
+  exit "$c"
+}
+
+_evi_log() {
+  [ -n "$EVI_DIR" ] && [ -d "$EVI_DIR" ] || return 0
+  printf '%s %s\n' "$(date '+%F %T')" "$*" >> "$EVI_DIR/errors.log" 2>/dev/null || true
+}
+
+# strict：--apply 之前的写阶段再调用。
+# 作用：把「忘了判返回码」的意外失败也变成留证退出，而不是带着错误继续往下走。
+# 注意：只在需要「一处失败即全停」的写阶段开启；只读清单阶段用 step 显式分级更可控。
+strict() {
+  set -eE -o pipefail
+  trap '_on_err $LINENO $?' ERR
+}
+
+_on_err() {
+  local ln="$1" rc="$2" cmd="${BASH_COMMAND:-?}"
+  err "未捕获错误 line=$ln rc=$rc cmd=$cmd"
+  _evi_log "UNCAUGHT line=$ln rc=$rc cmd=$cmd"
+  exit "$EX_SWAP"
+}
+
+# step <exit_code> <desc> -- <cmd...> —— 顺序步骤的显式分级
+# 失败时按给定码退出；成功打印一行。用于备份/替换/验证等关键步骤。
+step() {
+  local c="$1" d="$2"; shift 2
+  [ "${1:-}" = "--" ] && shift
+  log "--> $d"
+  if "$@"; then ok "$d"; else fail "$c" "$d"; fi
+}
+
+# ---------------------------------------------------------------------------
 # 1) 锚读取
 # ---------------------------------------------------------------------------
 # 单值：取该 KEY 的最后一次出现（同名 KEY 后续覆盖前者）
@@ -66,11 +120,18 @@ anchor_load() {
     k="${line%%=*}"
     v="${line#*=}"
     v="${v#\"}"; v="${v%\"}"
+    # 2026-11-23 新增键：G2 只读实测补齐项 + 候选锚 + 构建口径
     case "$k" in
       PROJECT|GROUP|SOP|MODE|HOST_ALIAS|HOST_ROLE|STATUS|DEPLOY_ROOT|PRIMARY_FILE|\
 UNIT|UNIT_FILE|UNIT_SHA|UNIT_BYTES|PORT|RESTART|BACKUP_DIR|BACKUP_NAMING|\
 PROBE|LOG_FILE|VHOST_FILE|VHOST_SHA|CURRENT_FILES|ROLLBACK_FILES|IMMUTABLE_FILES|\
-HARD_PREREQ|RESTART_WINDOW_FORBID|PRE_RESTART_STEP|POST_STEP)
+HARD_PREREQ|RESTART_WINDOW_FORBID|PRE_RESTART_STEP|POST_STEP|\
+SITE|SERVER|VHOST|VHOST_PATH|VHOST_BYTES|LISTEN|OWNER|DEPLOY_ROOT_MODE|\
+NGINX_RELOAD|NGINX_MASTER_PID_BASELINE|NGINX_MASTER_STARTED|\
+LIVE_FILE_CNT_BASELINE|DELIVERY_FILE_CNT|HEALTH_URL|PROBE_EXPECT|\
+JUDGE_REQUIRED|JUDGE_FORBIDDEN|KEEP_OLD_ASSETS|BACKUP_ROOT_FS_FORBIDDEN|\
+CANDIDATE_COMMIT|CANDIDATE_PARENT|CANDIDATE_BUILD_ENV|CANDIDATE_FILES|\
+CANDIDATE_DIFF|REPRO_PROOF|CANDIDATE_DELIVERY_VERIFIED|CANDIDATE_TESTENV_VERIFIED)
         export "$k=$v" ;;
     esac
   done < "$f"
@@ -272,6 +333,32 @@ selftest() {
   if ( assert_ro 'sha256sum /data/x.jar; df -h /data; systemctl show -p MainPID x | cut -d= -f2-' ) >/dev/null 2>&1; then
     ok "负控 PASS：只读命令被放行"
   else err "负控 FAIL：只读命令被误拦"; rc=1; fi
+
+  log "== selftest：失败语义（分级退出码 / step / 留证） =="
+  # 正控 7：fail 必须带出指定退出码（而不是笼统 1）
+  local got
+  ( fail "$EX_ARTIFACT" "selftest 故意失败" ) >/dev/null 2>&1
+  got=$?
+  if [ "$got" = "$EX_ARTIFACT" ]; then ok "正控 PASS：fail 退出码=$EX_ARTIFACT"; else err "正控 FAIL：exit=$got 期望 $EX_ARTIFACT"; rc=1; fi
+  # 正控 8：step 失败必须按指定码退出
+  local e1=0
+  ( step "$EX_BACKUP" "selftest 备份步骤" -- false ) >/dev/null 2>&1 || e1=$?
+  if [ "$e1" = "$EX_BACKUP" ]; then ok "正控 PASS：step 失败退出码=$EX_BACKUP"; else err "正控 FAIL：exit=$e1 期望 $EX_BACKUP"; rc=1; fi
+  # 正控 9：step 成功必须返回 0（防 step 本身把成功判成失败）
+  if ( step "$EX_SWAP" "selftest 成功步骤" -- true ) >/dev/null 2>&1; then
+    ok "正控 PASS：step 成功返回 0"
+  else err "正控 FAIL：step 把成功判成失败"; rc=1; fi
+  # 正控 10：strict 下未捕获错误必须留证并退出 EX_SWAP
+  # ★ 注意不要写成 `( ... ) || e2=$?`——子 shell 处于 || 左侧时，
+  #   bash 会抑制其内部的 set -e 与 ERR trap，trap 根本不触发（本 selftest 曾因此假失败）。
+  local d2 e2=0
+  d2="$(mktemp -d)"
+  ( EVI_DIR="$d2"; strict; false ) >/dev/null 2>&1
+  e2=$?
+  if [ "$e2" = "$EX_SWAP" ] && [ -s "$d2/errors.log" ]; then
+    ok "正控 PASS：strict 未捕获错误 exit=$EX_SWAP 且已留证"
+  else err "正控 FAIL：strict exit=$e2 或未留证"; rc=1; fi
+  rm -rf "$d2"
 
   ANCHOR_DIR="$old_anchor"
   rm -rf "$d"

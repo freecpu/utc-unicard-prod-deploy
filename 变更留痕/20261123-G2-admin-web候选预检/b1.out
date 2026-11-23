@@ -1,0 +1,81 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+== 1. DIST 目录属主/权限 ==
+/data/html/ryd-utc-admin/dist|nlxq:nlxq|755
+== 2. 三件 sha256 与字节 ==
+OK|index.html|5daccd9d746c27c0d53eb6bb7256a2ef709ff6881704355a029325f592a03cd6|685
+OK|assets/index.05463381.js|a502e558b9efb12a16b4b2f0f4f0acca32df65c4d384733a710dbc1dc12f3c81|1386384
+OK|assets/index.293e09e1.css|293e09e129cfcdad9dcb6f1dd13e88871a0e0ff548b92abfba17efcfdd9734b2|411184
+== 3. index.html 引用自洽 ==
+assets/index.05463381.js
+assets/index.293e09e1.css
+== 4. 文件数与总量 ==
+FILE_CNT=106
+SIZE=3.9M
+== 5. assets 下 index.* 保留情况 ==
+KEEP|index.048ab950.js
+KEEP|index.05463381.js
+KEEP|index.09d2e49e.js
+KEEP|index.1126a174.css
+KEEP|index.11a45da0.js
+KEEP|index.15a6f3da.js
+KEEP|index.1b65110d.js
+KEEP|index.1cbd849a.css
+KEEP|index.255db3f2.js
+KEEP|index.293e09e1.css
+KEEP|index.2f83fa0c.js
+KEEP|index.30469b5d.js
+KEEP|index.3101d47a.js
+KEEP|index.33ef8dc3.js
+KEEP|index.3a0a6bd0.js
+KEEP|index.428b207f.js
+KEEP|index.4a2d9151.js
+KEEP|index.4de0221f.css
+KEEP|index.4e3eed91.js
+KEEP|index.508ff2fc.js
+KEEP|index.58ccdc8f.js
+KEEP|index.5a6b7fcf.js
+KEEP|index.62f42a5c.js
+KEEP|index.64d479a4.js
+KEEP|index.71254066.js
+KEEP|index.7743b30b.js
+KEEP|index.79ff1fd2.js
+KEEP|index.99c13d7c.js
+KEEP|index.9b43b1e9.js
+KEEP|index.a368b854.js
+KEEP|index.a3d024c8.js
+KEEP|index.a6094f16.js
+KEEP|index.ac615182.css
+KEEP|index.bf3eb88c.js
+KEEP|index.cb510024.js
+KEEP|index.d5828916.js
+KEEP|index.db60220b.js
+KEEP|index.db7bdd38.css
+KEEP|index.dc77d1fe.js
+KEEP|index.dd7f5d1a.js
+KEEP|index.dd8a013d.js
+KEEP|index.e8720571.js
+KEEP|index.f7e99430.js
+KEEP|index.f83da389.js
+KEEP|index.f92d26f9.js
+KEEP|index.fcda8d7a.js
+KEEP|index.feaba3ad.js
+KEEP|index.ffd4621a.js
+== 6. 备份目录 ==
+drwxr-xr-x 4 nlxq nlxq 70 Oct 26 15:29 /data/html/ryd-utc-admin/dist.pre-G2-20261118
+== 7. nginx master pid/启动时刻 ==
+    PID                  STARTED CMD
+  93674 Sat Feb 18 23:07:00 2023 nginx: master process /usr/local/openresty/nginx/sbin/nginx
+ 164900 Mon Oct 26 15:44:47 2026 nginx: worker process
+== 8. vhost conf 指纹 ==
+FOUND|/usr/local/openresty/nginx/conf/servers/ryd-utc.conf|db1a0c12470d79d3845fb4a584cbad50dccf9c082cc4e10a48f28e90522c3133|1507
+FOUND|/usr/local/openresty/nginx/conf/nginx.conf|9353f236f2b365e343a4300bc31f8d8005d059705677e69b432b988c66ad52f0|2728
+== 9. 磁盘 ==
+/dev/vda3        40G   10G   30G  26% /
+== 10. dist 内非 assets 顶层项 ==
+TOP|assets
+TOP|index.html
+TOP|static
+TOP|table.json
+SSH_RC=0

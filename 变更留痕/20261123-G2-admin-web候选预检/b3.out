@@ -1,0 +1,134 @@
+== 总量 ==
+NEW_CNT=65
+OLD_CNT=65
+
+== 新增（仅候选有） ==
+ADD *./assets/403.272872f9.js
+ADD *./assets/account.1f4802c9.js
+ADD *./assets/agentFlow.d16712e6.js
+ADD *./assets/agentRecharge.862effc0.js
+ADD *./assets/AgentRechargeEdit.242b04ac.js
+ADD *./assets/allocate.d0f6c1bd.js
+ADD *./assets/AllocateAgent.a03e0bf8.js
+ADD *./assets/AllocateUser.a4e08087.js
+ADD *./assets/Dashboard.3885058b.js
+ADD *./assets/feeStrategyDetail.921ca97d.js
+ADD *./assets/flowPackage.8cf7d36f.js
+ADD *./assets/formatter.81d83652.js
+ADD *./assets/index.0e0cb01e.js
+ADD *./assets/index.0e0e37f7.js
+ADD *./assets/index.15db55e8.js
+ADD *./assets/index.294d7fde.js
+ADD *./assets/index.371b5c72.js
+ADD *./assets/index.4128226e.js
+ADD *./assets/index.4c35e569.js
+ADD *./assets/index.5027e128.js
+ADD *./assets/index.578e44d2.js
+ADD *./assets/index.73d7b5b6.js
+ADD *./assets/index.8a994a37.js
+ADD *./assets/index.937d2a46.js
+ADD *./assets/index.9b8cedea.js
+ADD *./assets/index.9fd05b7b.js
+ADD *./assets/index.a34ae9a4.js
+ADD *./assets/index.ac129c5e.js
+ADD *./assets/index.aca42efc.js
+ADD *./assets/index.baca3df2.js
+ADD *./assets/index.cbd2c633.js
+ADD *./assets/index.de3922a6.js
+ADD *./assets/index.e4fc0794.js
+ADD *./assets/list.1ba0f4aa.js
+ADD *./assets/Login.2b662da1.js
+ADD *./assets/Terminal.376a146e.js
+ADD *./assets/TerminalDetail.e7f349cf.js
+ADD *./assets/User.1e3bb5a9.js
+ADD *./assets/User.a5e8b260.js
+ADD *./assets/userRecharge.a5da99c7.js
+
+== 删除（仅基线有） ==
+DEL *./assets/403.d2f17d10.js
+DEL *./assets/account.56ebac32.js
+DEL *./assets/agentFlow.4f04fbc8.js
+DEL *./assets/agentRecharge.ce0e8242.js
+DEL *./assets/AgentRechargeEdit.5232b427.js
+DEL *./assets/allocate.ea8029aa.js
+DEL *./assets/AllocateAgent.07f32e51.js
+DEL *./assets/AllocateUser.bfe74eeb.js
+DEL *./assets/Dashboard.3a8dc656.js
+DEL *./assets/feeStrategyDetail.9a738f55.js
+DEL *./assets/flowPackage.3a474458.js
+DEL *./assets/formatter.4af71002.js
+DEL *./assets/index.048ab950.js
+DEL *./assets/index.05463381.js
+DEL *./assets/index.11a45da0.js
+DEL *./assets/index.2f83fa0c.js
+DEL *./assets/index.3101d47a.js
+DEL *./assets/index.33ef8dc3.js
+DEL *./assets/index.4a2d9151.js
+DEL *./assets/index.4e3eed91.js
+DEL *./assets/index.5a6b7fcf.js
+DEL *./assets/index.64d479a4.js
+DEL *./assets/index.7743b30b.js
+DEL *./assets/index.9b43b1e9.js
+DEL *./assets/index.a6094f16.js
+DEL *./assets/index.bf3eb88c.js
+DEL *./assets/index.dc77d1fe.js
+DEL *./assets/index.dd7f5d1a.js
+DEL *./assets/index.dd8a013d.js
+DEL *./assets/index.e8720571.js
+DEL *./assets/index.f92d26f9.js
+DEL *./assets/index.fcda8d7a.js
+DEL *./assets/index.ffd4621a.js
+DEL *./assets/list.839b3f4d.js
+DEL *./assets/Login.c4a02c4d.js
+DEL *./assets/Terminal.3cd9568f.js
+DEL *./assets/TerminalDetail.bf342bff.js
+DEL *./assets/User.5cbe2efe.js
+DEL *./assets/User.87f22cda.js
+DEL *./assets/userRecharge.7ae3fc96.js
+
+== 变更（同路径 sha 不同） ==
+CHG *./index.html ee3eec792c503d3f8fcdf0f7fae01d560aaf085a306807fa95304e593d089185 <- 5daccd9d746c27c0d53eb6bb7256a2ef709ff6881704355a029325f592a03cd6
+
+== 未变计数 ==
+24
+
+== 候选 index.html 全文（压行） ==
+<!DOCTYPE html> <html lang="zh_cn"> <head> <meta charset="UTF-8" /> <link rel="icon" type="image/svg+xml" href="./assets/logo.ee82643d.jpg" /> <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <link rel="stylesheet" href="https://at.alicdn.com/t/font_830376_qzecyukz0s.css"> <title>运营后台</title> <script type="module" crossorigin src="./assets/index.0e0cb01e.js"></script> <link rel="stylesheet" href="./assets/index.293e09e1.css"> </head> <body> <noscript> <strong>We're sorry but ap doesn't work properly without JavaScript enabled. Please enable it to continue.</strong> </noscript> <div id="app"></div> </body> </html>
+== 候选 index.html sha/bytes ==
+ee3eec792c503d3f8fcdf0f7fae01d560aaf085a306807fa95304e593d089185
+685
+
+== 候选 assets 下 index.* 清单（sha|bytes|name） ==
+40c1fece06ee3fb56a8446c95d2f32e82a54ac867ed5e8010eb355d5db3794e8|1386384|index.0e0cb01e.js
+e41d9aaf68dbafae514e66863970214b68f20f5fd876b07e664a2298ae054c8c|2608|index.0e0e37f7.js
+1126a174dc17963e7b912d24c6f158dd96c85cb02c22e22b1fdb129113627813|1565|index.1126a174.css
+3e9409098546fc9b26a418d915ba9af9ecac8a7e320b960e70e9fde0334b4887|4940|index.15db55e8.js
+1cbd849af7a2bf223f5e43a0ba6db0cc51bde615ecd98add0236a215b258eab7|227|index.1cbd849a.css
+293e09e129cfcdad9dcb6f1dd13e88871a0e0ff548b92abfba17efcfdd9734b2|411184|index.293e09e1.css
+9b0206d90445300983f71a187c8b433e4daac24f28d3cdba5bdf8f6700093cc4|3412|index.294d7fde.js
+205aee05fb914cb373e5d225e0450f54af65b6cd3572a0d9d0d05cded29f1e2a|4877|index.371b5c72.js
+b79c294c88ef4faab34088a3983e856e35353cd9a86aafc84cd41484c90617d3|585|index.4128226e.js
+b740cf3c5cac97142882fba42bf4881b5447b36c91595a0d3556a193bb6f5d34|6823|index.4c35e569.js
+4de0221ffaae4f01ecd0ed0c3abe20ec968969cdbda82ebb2411c1e4f32eaa65|70|index.4de0221f.css
+a526c28fbe84d10cdc356af56151cff0c6dc0524a4e616ce1b02a9342578d860|3505|index.5027e128.js
+40aea498690b1540dcf28ced28bdf7f2e49cf694dcaa1ee43bb942ed50f02352|3823|index.578e44d2.js
+3781fcfb434647b7ee642cba1566aeafa6fbc60fbb83d168d8167f20a60f4bc5|4481|index.73d7b5b6.js
+b52ec1307baac965156f6a973751a2c85886653081ac68c0642e864634c4129b|4937|index.8a994a37.js
+ba19321fec0a2cf699fe40fd200e9b10b2b2c114b13a0249566885a81018e643|4992|index.937d2a46.js
+00b4cd41dcdca532872c8ab35f03ece4631d09eb08e661405b3e29cacd98f151|7488|index.9b8cedea.js
+ce818993f4eb9a7da0d41cf005b9be2f51f95f64cc5f99e59624d8d66449a32e|9714|index.9fd05b7b.js
+496f0c5f92975738f832667102bd5b7b415b9b5961f1e1d1401a6c60410fc340|1861|index.a34ae9a4.js
+291a6e5bf6d49e67b216de39b32d6bd0a67510abbe55222a3b34a06ce85f31ea|2746|index.ac129c5e.js
+ac61518286280e04610ba6e41772b9b6a006bf07d77ac6a257516cb03e8732f2|25059|index.ac615182.css
+2ca2aab6adba8704dcd27289e384f67b24e82888599c736672fd56354cc23c9e|392|index.aca42efc.js
+f63210c8bcd74f71b4583249815df9fb48190754ca1465361f8cbf0e96d170e1|8554|index.baca3df2.js
+8821839a159bc90ab359f969c9bd3dda9521f8d3edfcad0ff901766bfa4c0215|5037|index.cbd2c633.js
+db7bdd3819841bd2e8922d657b835bc4e271c6c204782f942aca9412c76508af|31|index.db7bdd38.css
+3cf1d3585d7432c8eba98b3cee1c714a4ad5c531a45ac9e1c37ce0b2b46e7a3e|2163|index.de3922a6.js
+004bb85b86df2497ccfd6a9d3edb3299ac7e50a977a6c9f5181834530f3aac8a|2702|index.e4fc0794.js
+
+== 候选顶层 ==
+TOP|assets
+TOP|index.html
+TOP|static
+TOP|table.json
